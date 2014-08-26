@@ -43,7 +43,7 @@ CREATE TABLE Achievement {
     InstanceRunID         smallint       NOT_NULL,
     WhenAchieved          DATETIME
     Name                  varchar(45),
-    RewardBody          varchar(45),
+    RewardBody            varchar(45),
     PRIMARY KEY(AchievementID, InstanceRunID),
     FOREIGN KEY (InstanceRunID) REFERENCES (InstanceRun)
         ON DELETE RESTRICT
