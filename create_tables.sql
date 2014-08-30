@@ -171,5 +171,67 @@ FOREIGN KEY (EquipmentID) REFERENCES Equipment (EquipmentID)
 	ON UPDATE CASCADE
 )ENGINE=InnoDB;
 
+CREATE TABLE Viewer(
+    ViewerID UNSIGNED INT AUTO_INCREMENT,
+    /*MODIFIED from smallint, we're hoping for a lot of viewers! */
+    ViewerType VARCHAR(45) NOT NULL, 
+    /* Possible values n for none/normal, C for CrowdFunding, P for 
+    Premium and B for Both */
+    DateOfBirth  DATE,
+    Email        VARCHAR(50),
+    PRIMARYKEY   (ViewerID)
+)ENGINE=InnoDB;
+
+CREATE TABLE CrowdFundingViewer(
+    ViewerID UNSIGNED INT,
+    /* MODIFIED to match */
+    FirstName           VARCHAR(45),
+    LastName            VARCHAR(45),
+    TotalAmountDonated  DECIMAL(9,2),
+    /* MODIFIED from VARCHAR(45).  Allows for donations to sum to 
+    $9,999,999.99 (to be safe).  Do we think less?*/
+    PRIMARY KEY (ViewerID),
+    FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+        /* I currently have no idea what these mean */
+)ENGINE=InnoDB;
+
+CREATE TABLE PremiumViewer(
+    ViewerID UNSIGNED INT,
+    /* MODIFIED to match */
+    RenewalDate DATE NOT NULL,
+    PRIMARYKEY  (ViewerID),
+    FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+)ENGINE=InnoDB;
+
+CREATE TABLE ViewerOrder(
+    ViewerOrderID INT AUTO_INCREMENT,
+    /* MODIFIED from smallint to unsigned int, allowing for up to
+    ~4 billion orders to be made */
+    OrderDate     DATE      NOT  NULL,
+    ViewedStatus  CHAR(7)   NOT  NULL,
+    ViewerID      UNSIGNED  INT  NOT    NULL,
+    /* MODIFIED to match */
+    PRIMARY KEY (ViewerOrderID),
+    FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+)ENGINE=InnoDB;
+
+CREATE TABLE ViewerOrderLine(
+    VideoID        SMALLINT,
+    ViewerOrderID  SMALLINT,
+    FlagPerk       BOOLEAN    NOT  NULL,
+    PRIMARY KEY (VideoID,ViewerOrderID),
+    FOREIGN KEY (VideoID) REFERENCES Video(VideoID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+    FOREIGN KEY (ViewerOrderID) REFERENCES ViewerOrder(ViewerOrderID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+)ENGINE=InnoDB;
 
 
