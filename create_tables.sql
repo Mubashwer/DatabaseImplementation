@@ -216,8 +216,8 @@ CREATE TABLE Address(
 
 #Geordie
 CREATE TABLE ViewerAddress(
-    ViewerID               INT UNSIGNED		NOT NULL,
-    AddressID              SMALLINT 		NOT NULL,
+    ViewerID               INT UNSIGNED     NOT NULL,
+    AddressID              SMALLINT         NOT NULL,
     StartDate              DATE             NOT NULL,
     EndDate                DATE,
     PRIMARY KEY (ViewerID, AddressID, StartDate),
@@ -231,8 +231,8 @@ CREATE TABLE ViewerAddress(
 
 #Geordie
 CREATE TABLE PlayerAddress(
-    PlayerID               SMALLINT		    NOT NULL,
-    AddressID              SMALLINT 		NOT NULL,
+    PlayerID               SMALLINT         NOT NULL,
+    AddressID              SMALLINT         NOT NULL,
     StartDate              DATE             NOT NULL,
     EndDate                DATE,			
     PRIMARY KEY (PlayerID, AddressID, StartDate),
