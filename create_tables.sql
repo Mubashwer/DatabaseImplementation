@@ -1,5 +1,5 @@
 CREATE TABLE Game(
-    GameID                  SMALLINT       AUTO_INCREMENT, 
+    GameID                  MEDIUMINT      AUTO_INCREMENT,  #it is possible to play more than 32k games in the long run
     Genre                   VARCHAR(50),
     Review                  TEXT,
     StarRating              SMALLINT,
@@ -35,12 +35,12 @@ CREATE TABLE Achievement (
 ) ENGINE=InnoDB;
 
 CREATE TABLE Video (
-    VideoID                 SMALLINT       AUTO_INCREMENT,
+    VideoID                 MEDIUMINT      AUTO_INCREMENT, #many videos at every instance run
     URL                     VARCHAR(50)    NOT NULL,
     Price                   DECIMAL(5,2),
     VideoType               VARCHAR(45),
     InstanceRunID           SMALLINT       NOT NULL,
-    GameID                  SMALLINT       NOT NULL,
+    GameID                  MEDIUMINT      NOT NULL, #changed to match
     PRIMARY KEY(VideoID),
     FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
         ON DELETE RESTRICT
@@ -61,7 +61,7 @@ CREATE TABLE Viewer(
 	PRIMARY KEY(ViewerID)
 
 
-)
+) ENGINE=InnoDB;
 
 
 CREATE TABLE ViewerAddress(
@@ -80,7 +80,7 @@ CREATE TABLE ViewerAddress(
 		ON DELETE RESTRICT
 		ON UPDATE CASCADE
 
-)
+) ENGINE=InnoDB;
 
 CREATE TABLE PlayerAddress(
 
@@ -96,7 +96,7 @@ CREATE TABLE PlayerAddress(
 	FOREIGN KEY(PlayerID)			REFERENCES Player(PlayerID)
 		ON DELETE RESTRICT
 		ON UPDATE CASCADE
-	)
+	) ENGINE=InnoDB;
 
 CREATE TABLE Address(
 
@@ -114,7 +114,7 @@ CREATE TABLE Address(
 	Country					VARCHAR(50)		NOT NULL,
 
 	PRIMARY KEY(AddressID)
-)
+) ENGINE=InnoDB;
 
 CREATE TABLE Player (
 PlayerID SMALLINT AUTO_INCREMENT,
@@ -172,18 +172,18 @@ FOREIGN KEY (EquipmentID) REFERENCES Equipment (EquipmentID)
 )ENGINE=InnoDB;
 
 CREATE TABLE Viewer(
-    ViewerID UNSIGNED INT AUTO_INCREMENT,
+    ViewerID INT UNSIGNED AUTO_INCREMENT,
     /*MODIFIED from smallint, we're hoping for a lot of viewers! */
     ViewerType VARCHAR(45) NOT NULL, 
     /* Possible values n for none/normal, C for CrowdFunding, P for 
     Premium and B for Both */
     DateOfBirth  DATE,
     Email        VARCHAR(50),
-    PRIMARYKEY   (ViewerID)
+    PRIMARY KEY   (ViewerID)
 )ENGINE=InnoDB;
 
 CREATE TABLE CrowdFundingViewer(
-    ViewerID UNSIGNED INT,
+    ViewerID INT UNSIGNED,
     /* MODIFIED to match */
     FirstName           VARCHAR(45),
     LastName            VARCHAR(45),
@@ -198,10 +198,10 @@ CREATE TABLE CrowdFundingViewer(
 )ENGINE=InnoDB;
 
 CREATE TABLE PremiumViewer(
-    ViewerID UNSIGNED INT,
+    ViewerID INT UNSIGNED,
     /* MODIFIED to match */
     RenewalDate DATE NOT NULL,
-    PRIMARYKEY  (ViewerID),
+    PRIMARY KEY  (ViewerID),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
@@ -213,7 +213,7 @@ CREATE TABLE ViewerOrder(
     ~4 billion orders to be made */
     OrderDate     DATE      NOT  NULL,
     ViewedStatus  CHAR(7)   NOT  NULL,
-    ViewerID      UNSIGNED  INT  NOT    NULL,
+    ViewerID      INT UNSIGNED  NOT    NULL,
     /* MODIFIED to match */
     PRIMARY KEY (ViewerOrderID),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
@@ -222,7 +222,7 @@ CREATE TABLE ViewerOrder(
 )ENGINE=InnoDB;
 
 CREATE TABLE ViewerOrderLine(
-    VideoID        SMALLINT,
+    VideoID        MEDIUMINT, #mubashwer: changed to match mine
     ViewerOrderID  SMALLINT,
     FlagPerk       BOOLEAN    NOT  NULL,
     PRIMARY KEY (VideoID,ViewerOrderID),
