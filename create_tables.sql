@@ -46,7 +46,7 @@ CREATE TABLE Player (
     FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID) 
 	    ON DELETE RESTRICT
 	    ON UPDATE CASCADE
-)ENGINE=InnoDB;
+) ENGINE=InnoDB;
 
 #Mubashwer    
 CREATE TABLE InstanceRun (
@@ -103,7 +103,7 @@ CREATE TABLE Venue (
     FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID)
 	    ON DELETE RESTRICT
 	    ON UPDATE CASCADE
-)ENGINE=InnoDB;
+) ENGINE=InnoDB;
 
 #Kendra
 CREATE TABLE Equipment (
@@ -112,7 +112,7 @@ CREATE TABLE Equipment (
     EquipmentReview         TEXT,
     ProcessorSpeed          VARCHAR(45),
     PRIMARY KEY (EquipmentID)
-)ENGINE=InnoDB;
+) ENGINE=InnoDB;
 
 #Kendra
 CREATE TABLE VenueEquipment (
@@ -127,7 +127,7 @@ CREATE TABLE VenueEquipment (
     FOREIGN KEY (EquipmentID) REFERENCES Equipment(EquipmentID)
 	    ON DELETE RESTRICT
 	    ON UPDATE CASCADE
-)ENGINE=InnoDB;
+) ENGINE=InnoDB;
 
 #Jaye
 CREATE TABLE Viewer(
@@ -139,7 +139,7 @@ CREATE TABLE Viewer(
     DateOfBirth             DATE,
     Email                   VARCHAR(50),
     PRIMARY KEY (ViewerID)
-)ENGINE=InnoDB;
+) ENGINE=InnoDB;
 
 #Jaye
 CREATE TABLE CrowdFundingViewer(
@@ -155,7 +155,7 @@ CREATE TABLE CrowdFundingViewer(
         ON DELETE RESTRICT
         ON UPDATE CASCADE
         /* I currently have no idea what these mean */
-)ENGINE=InnoDB;
+) ENGINE=InnoDB;
 
 #Jaye
 CREATE TABLE PremiumViewer(
@@ -166,7 +166,7 @@ CREATE TABLE PremiumViewer(
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
-)ENGINE=InnoDB;
+) ENGINE=InnoDB;
 
 #Jaye
 CREATE TABLE ViewerOrder(
@@ -181,7 +181,7 @@ CREATE TABLE ViewerOrder(
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
-)ENGINE=InnoDB;
+) ENGINE=InnoDB;
 
 #Jaye
 CREATE TABLE ViewerOrderLine(
@@ -195,7 +195,7 @@ CREATE TABLE ViewerOrderLine(
     FOREIGN KEY (ViewerOrderID) REFERENCES ViewerOrder(ViewerOrderID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
-)ENGINE=InnoDB;
+) ENGINE=InnoDB;
 
 #Geordie
 CREATE TABLE Address(
