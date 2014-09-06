@@ -220,7 +220,7 @@ CREATE TABLE ViewerAddress(
     AddressID              SMALLINT         NOT NULL,
     StartDate              DATE             NOT NULL,
     EndDate                DATE,
-    PRIMARY KEY (ViewerID, AddressID, StartDate),
+    PRIMARY KEY (ViewerID, AddressID),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
@@ -235,7 +235,7 @@ CREATE TABLE PlayerAddress(
     AddressID              SMALLINT         NOT NULL,
     StartDate              DATE             NOT NULL,
     EndDate                DATE,			
-    PRIMARY KEY (PlayerID, AddressID, StartDate),
+    PRIMARY KEY (PlayerID, AddressID),
     FOREIGN KEY (PlayerID) REFERENCES Player(PlayerID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
