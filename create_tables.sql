@@ -133,7 +133,7 @@ CREATE TABLE VenueEquipment (
 CREATE TABLE Viewer(
     ViewerID                INT UNSIGNED   AUTO_INCREMENT,
     /*MODIFIED from smallint, we're hoping for a lot of viewers! */
-    ViewerType              CHAR(1)        NOT NULL, #changed to char(1)
+    ViewerType              CHAR(1)        DEFAULT "N" NOT NULL, #changed to char(1)
     /* Possible values N for none/normal, C for CrowdFunding, P for 
     Premium and B for Both */
     DateOfBirth             DATE,
