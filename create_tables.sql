@@ -19,28 +19,28 @@ DROP TABLE IF EXISTS Game;
 #Mubashwer
 CREATE TABLE Game(
     GameID                  MEDIUMINT      AUTO_INCREMENT,  #it is possible to play more than 32k games in the long run
-    Genre                   VARCHAR(50),
-    Review                  TEXT,
-    StarRating              SMALLINT,
-    ClassificationRating    VARCHAR(5),
-    PlatformNotes           TEXT,
-    PromotionLink           VARCHAR(50),
-    Cost                    DECIMAL(5,2),      
+    Genre                   VARCHAR(50)    DEFAULT NULL,
+    Review                  TEXT           DEFAULT NULL,
+    StarRating              SMALLINT       DEFAULT NULL,
+    ClassificationRating    VARCHAR(5)     DEFAULT NULL,
+    PlatformNotes           TEXT           DEFAULT NULL,
+    PromotionLink           VARCHAR(50)    DEFAULT NULL,
+    Cost                    DECIMAL(5,2)   DEFAULT NULL,   
     PRIMARY KEY (GameID)
 ) ENGINE=InnoDB;
 
 #Kendra
 CREATE TABLE Player (
     PlayerID                SMALLINT       AUTO_INCREMENT,
-    SupervisorID            SMALLINT, # supervisor is optional
+    SupervisorID            SMALLINT       DEFAULT NULL, # supervisor is optional
     FirstName               VARCHAR(50)    NOT NULL,
     LastName                VARCHAR(50)    NOT NULL,
     Role                    VARCHAR(50)    NOT NULL,
     PlayerType              VARCHAR(1)     NOT NULL, #Type is a keyword
-    ProfileDescription      TEXT,
+    ProfileDescription      TEXT           DEFAULT NULL,          
     Email                   VARCHAR(50)    NOT NULL,
     GameHandle              VARCHAR(12)    NOT NULL,
-    Phone                   VARCHAR(14),
+    Phone                   VARCHAR(14)    DEFAULT NULL,
     VoiP                    VARCHAR(30)    NOT NULL,
     PRIMARY KEY (PlayerID),
     FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID) 
@@ -52,9 +52,9 @@ CREATE TABLE Player (
 CREATE TABLE InstanceRun (
     InstanceRunID           SMALLINT       AUTO_INCREMENT,
     SupervisorID            SMALLINT       NOT NULL,
-    InstanceName            VARCHAR(45),   # changed name from Name (as Name is part of syntax)
-    RecordedTime            DATETIME,
-    CategoryName            VARCHAR(50),
+    InstanceName            VARCHAR(45)    DEFAULT NULL,   # changed name from Name (as Name is part of syntax)
+    RecordedTime            DATETIME       DEFAULT NULL,
+    CategoryName            VARCHAR(50)    DEFAULT NULL,
     PRIMARY KEY (InstanceRunID),
     FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID)
         ON DELETE RESTRICT
@@ -65,9 +65,9 @@ CREATE TABLE InstanceRun (
 CREATE TABLE Achievement (
     AchievementID           SMALLINT       AUTO_INCREMENT,
     InstanceRunID           SMALLINT       NOT NULL,
-    WhenAchieved            DATETIME,
-    AchievementName         VARCHAR(45),   # changed name from Name (as Name is part of syntax)
-    RewardBody              VARCHAR(45),
+    WhenAchieved            DATETIME       DEFAULT NULL,
+    AchievementName         VARCHAR(45)    DEFAULT NULL, # changed name from Name (as Name is part of syntax)
+    RewardBody              VARCHAR(45)    DEFAULT NULL,
     PRIMARY KEY (AchievementID),
     FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
         ON DELETE RESTRICT
@@ -78,8 +78,8 @@ CREATE TABLE Achievement (
 CREATE TABLE Video (
     VideoID                 MEDIUMINT      AUTO_INCREMENT, #many videos at every instance run
     URL                     VARCHAR(50)    NOT NULL,
-    Price                   DECIMAL(5,2),
-    VideoType               VARCHAR(45),
+    Price                   DECIMAL(5,2)   DEFAULT 0.00,
+    VideoType               VARCHAR(45)    DEFAULT NULL,
     InstanceRunID           SMALLINT       NOT NULL,
     GameID                  MEDIUMINT      NOT NULL, #changed to match
     PRIMARY KEY (VideoID),
@@ -95,9 +95,9 @@ CREATE TABLE Video (
 CREATE TABLE Venue (
     VenueID                 SMALLINT       AUTO_INCREMENT,
     VenueName               VARCHAR(50)    NOT NULL, #Name is a keyword
-    VenueDescription        TEXT,
-    PowerOutlets            SMALLINT,
-    LightingNotes           TEXT,
+    VenueDescription        TEXT           DEFAULT NULL,
+    PowerOutlets            SMALLINT       DEFAULT NULL,
+    LightingNotes           TEXT           DEFAULT NULL,
     SupervisorID            SMALLINT       NOT NULL,
     PRIMARY KEY (VenueID),
     FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID)
@@ -108,9 +108,9 @@ CREATE TABLE Venue (
 #Kendra
 CREATE TABLE Equipment (
     EquipmentID             SMALLINT       AUTO_INCREMENT,
-    ModelAndMake            VARCHAR(45),
-    EquipmentReview         TEXT,
-    ProcessorSpeed          VARCHAR(45),
+    ModelAndMake            VARCHAR(45)    DEFAULT NULL,
+    EquipmentReview         TEXT           DEFAULT NULL,
+    ProcessorSpeed          VARCHAR(45)    DEFAULT NULL,
     PRIMARY KEY (EquipmentID)
 ) ENGINE=InnoDB;
 
@@ -119,7 +119,7 @@ CREATE TABLE VenueEquipment (
     VenueID                 SMALLINT       NOT NULL,
     EquipmentID             SMALLINT       NOT NULL,
     FinancialYearStartingDate   DATE       NOT NULL,
-    SoftwareVersion         VARCHAR(45),
+    SoftwareVersion         VARCHAR(45)    DEFAULT NULL,
     PRIMARY KEY (VenueID, EquipmentID),
     FOREIGN KEY (VenueID) REFERENCES Venue(VenueID)
 	    ON DELETE RESTRICT
@@ -133,21 +133,20 @@ CREATE TABLE VenueEquipment (
 CREATE TABLE Viewer(
     ViewerID                INT UNSIGNED   AUTO_INCREMENT,
     /*MODIFIED from smallint, we're hoping for a lot of viewers! */
+    FirstName               VARCHAR(45)    DEFAULT NULL,
+    LastName                VARCHAR(45)    DEFAULT NULL,    
     ViewerType              CHAR(1)        DEFAULT "N" NOT NULL, #changed to char(1)
     /* Possible values N for none/normal, C for CrowdFunding, P for 
     Premium and B for Both */
-    DateOfBirth             DATE,
-    Email                   VARCHAR(50),
+    DateOfBirth             DATE           DEFAULT NULL,
+    Email                   VARCHAR(50)    DEFAULT NULL,
     PRIMARY KEY (ViewerID)
 ) ENGINE=InnoDB;
 
 #Jaye
 CREATE TABLE CrowdFundingViewer(
     ViewerID                INT UNSIGNED   NOT NULL,
-    /* MODIFIED to match */
-    FirstName               VARCHAR(45),
-    LastName                VARCHAR(45),
-    TotalAmountDonated      DECIMAL(9,2),
+    TotalAmountDonated      DECIMAL(9,2)   DEFAULT 0.00,
     /* MODIFIED from VARCHAR(45).  Allows for donations to sum to 
     $9,999,999.99 (to be safe).  Do we think less?*/
     PRIMARY KEY (ViewerID),
@@ -159,7 +158,7 @@ CREATE TABLE CrowdFundingViewer(
 
 #Jaye
 CREATE TABLE PremiumViewer(
-    ViewerID                INT UNSIGNED,
+    ViewerID                INT UNSIGNED   NOT NULL,
     /* MODIFIED to match */
     RenewalDate             DATE           NOT NULL,
     PRIMARY KEY (ViewerID),
@@ -185,7 +184,7 @@ CREATE TABLE ViewerOrder(
 
 #Jaye
 CREATE TABLE ViewerOrderLine(
-    VideoID                 MEDIUMINT, #changed to match
+    VideoID                 MEDIUMINT      NOT NULL, #changed to match
     ViewerOrderID           INT UNSIGNED   NOT NULL,
     FlagPerk                BOOLEAN        NOT NULL,
     PRIMARY KEY (VideoID, ViewerOrderID),
@@ -201,12 +200,12 @@ CREATE TABLE ViewerOrderLine(
 CREATE TABLE Address(
     AddressID               SMALLINT       AUTO_INCREMENT,
     StreetNumber            SMALLINT       NOT NULL,
-    StreetNumberSuffix      VARCHAR(20),
+    StreetNumberSuffix      VARCHAR(20)    DEFAULT NULL,
     StreetName              VARCHAR(50)    NOT NULL,
     StreetType              VARCHAR(20)    NOT NULL,
-    AddressType             VARCHAR(20),
-    AddressTypeIdentifier   VARCHAR(20),
-    MinorMunicipality       VARCHAR(50),
+    AddressType             VARCHAR(20)    DEFAULT NULL,
+    AddressTypeIdentifier   VARCHAR(20)    DEFAULT NULL,
+    MinorMunicipality       VARCHAR(50)    DEFAULT NULL,
     MajorMunicipality       VARCHAR(50)    NOT NULL,
     GoverningDistrict       VARCHAR(50)    NOT NULL,
     PostalArea              VARCHAR(10)    NOT NULL, #changed to 10 as in lecture slide
@@ -219,8 +218,8 @@ CREATE TABLE ViewerAddress(
     ViewerID               INT UNSIGNED     NOT NULL,
     AddressID              SMALLINT         NOT NULL,
     StartDate              DATE             NOT NULL,
-    EndDate                DATE,
-    PRIMARY KEY (ViewerID, AddressID),
+    EndDate                DATE             DEFAULT NULL,
+    PRIMARY KEY (ViewerID, AddressID, StartDate),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
@@ -234,8 +233,8 @@ CREATE TABLE PlayerAddress(
     PlayerID               SMALLINT         NOT NULL,
     AddressID              SMALLINT         NOT NULL,
     StartDate              DATE             NOT NULL,
-    EndDate                DATE,			
-    PRIMARY KEY (PlayerID, AddressID),
+    EndDate                DATE             DEFAULT NULL,			
+    PRIMARY KEY (PlayerID, AddressID, StartDate),
     FOREIGN KEY (PlayerID) REFERENCES Player(PlayerID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
