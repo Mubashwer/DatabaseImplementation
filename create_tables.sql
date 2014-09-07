@@ -209,7 +209,7 @@ CREATE TABLE Address(
     MinorMunicipality       VARCHAR(50),
     MajorMunicipality       VARCHAR(50)    NOT NULL,
     GoverningDistrict       VARCHAR(50)    NOT NULL,
-    PostalArea              VARCHAR(4)     NOT NULL, #? varchar 4???? No US players???
+    PostalArea              VARCHAR(10)    NOT NULL, #changed to 10 as in lecture slide
     Country                 VARCHAR(50)    NOT NULL,
    PRIMARY KEY (AddressID)
 ) ENGINE=InnoDB;
