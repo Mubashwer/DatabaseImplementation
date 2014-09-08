@@ -43,7 +43,7 @@ CREATE TABLE Player (
     VoiP                    VARCHAR(30)    NOT NULL,
     PRIMARY KEY (PlayerID),
     FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID) 
-	    ON DELETE RESTRICT
+	    ON DELETE SET NULL
 	    ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
