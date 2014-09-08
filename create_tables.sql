@@ -209,7 +209,7 @@ CREATE TABLE Address(
     GoverningDistrict       VARCHAR(50)    NOT NULL,
     PostalArea              VARCHAR(10)    NOT NULL, #changed to 10 as in lecture slide
     Country                 VARCHAR(50)    NOT NULL,
-   PRIMARY KEY (AddressID)
+    PRIMARY KEY (AddressID)
 ) ENGINE=InnoDB;
 
 #Geordie
@@ -222,7 +222,7 @@ CREATE TABLE ViewerAddress(
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
-	FOREIGN KEY (AddressID) REFERENCES Address(AddressID)
+    FOREIGN KEY (AddressID) REFERENCES Address(AddressID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -237,7 +237,7 @@ CREATE TABLE PlayerAddress(
     FOREIGN KEY (PlayerID) REFERENCES Player(PlayerID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
-	FOREIGN KEY (AddressID) REFERENCES Address(AddressID)
+    FOREIGN KEY (AddressID) REFERENCES Address(AddressID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
