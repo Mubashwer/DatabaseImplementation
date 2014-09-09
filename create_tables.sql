@@ -15,9 +15,9 @@ DROP TABLE IF EXISTS InstanceRun;
 DROP TABLE IF EXISTS Player;
 DROP TABLE IF EXISTS Game;
 
-#Mubashwer
+
 CREATE TABLE Game(
-    GameID                  MEDIUMINT      AUTO_INCREMENT,  #it is possible to play more than 32k games in the long run
+    GameID                  MEDIUMINT      AUTO_INCREMENT,  
     Genre                   VARCHAR(50)    DEFAULT NULL,
     Review                  TEXT           DEFAULT NULL,
     StarRating              SMALLINT       DEFAULT NULL,
@@ -28,14 +28,14 @@ CREATE TABLE Game(
     PRIMARY KEY (GameID)
 ) ENGINE=InnoDB;
 
-#Kendra
+
 CREATE TABLE Player (
     PlayerID                SMALLINT       AUTO_INCREMENT,
-    SupervisorID            SMALLINT       DEFAULT NULL, # supervisor is optional
+    SupervisorID            SMALLINT       DEFAULT NULL, 
     FirstName               VARCHAR(50)    NOT NULL,
     LastName                VARCHAR(50)    NOT NULL,
     Role                    VARCHAR(50)    NOT NULL,
-    PlayerType              CHAR(1)        NOT NULL, #Type is a keyword
+    PlayerType              CHAR(1)        NOT NULL, 
     ProfileDescription      TEXT           DEFAULT NULL,          
     Email                   VARCHAR(50)    NOT NULL,
     GameHandle              VARCHAR(12)    NOT NULL,
@@ -47,11 +47,11 @@ CREATE TABLE Player (
 	    ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-#Mubashwer    
+   
 CREATE TABLE InstanceRun (
     InstanceRunID           SMALLINT       AUTO_INCREMENT,
     SupervisorID            SMALLINT       NOT NULL,
-    InstanceName            VARCHAR(45)    DEFAULT NULL,   # changed name from Name (as Name is part of syntax)
+    InstanceName            VARCHAR(45)    DEFAULT NULL,  
     RecordedTime            DATETIME       DEFAULT NULL,
     CategoryName            VARCHAR(50)    DEFAULT NULL,
     PRIMARY KEY (InstanceRunID),
@@ -60,12 +60,12 @@ CREATE TABLE InstanceRun (
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-#Mubashwer
+
 CREATE TABLE Achievement (
     AchievementID           SMALLINT       AUTO_INCREMENT,
     InstanceRunID           SMALLINT       NOT NULL,
     WhenAchieved            DATETIME       DEFAULT NULL,
-    AchievementName         VARCHAR(45)    DEFAULT NULL, # changed name from Name (as Name is part of syntax)
+    AchievementName         VARCHAR(45)    DEFAULT NULL,
     RewardBody              VARCHAR(45)    DEFAULT NULL,
     PRIMARY KEY (AchievementID),
     FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
@@ -73,14 +73,14 @@ CREATE TABLE Achievement (
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-#Mubashwer
+
 CREATE TABLE Video (
-    VideoID                 MEDIUMINT      AUTO_INCREMENT, #many videos at every instance run
+    VideoID                 MEDIUMINT      AUTO_INCREMENT, 
     URL                     VARCHAR(50)    NOT NULL,
     Price                   DECIMAL(5,2)   DEFAULT 0.00,
     VideoType               VARCHAR(45)    DEFAULT NULL,
     InstanceRunID           SMALLINT       NOT NULL,
-    GameID                  MEDIUMINT      NOT NULL, #changed to match
+    GameID                  MEDIUMINT      NOT NULL, 
     PRIMARY KEY (VideoID),
     FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
         ON DELETE RESTRICT
@@ -90,10 +90,10 @@ CREATE TABLE Video (
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-#Kendra
+
 CREATE TABLE Venue (
     VenueID                 SMALLINT       AUTO_INCREMENT,
-    VenueName               VARCHAR(50)    NOT NULL, #Name is a keyword
+    VenueName               VARCHAR(50)    NOT NULL, 
     VenueDescription        TEXT           DEFAULT NULL,
     PowerOutlets            SMALLINT       DEFAULT NULL,
     LightingNotes           TEXT           DEFAULT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE Venue (
 	    ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-#Kendra
+
 CREATE TABLE Equipment (
     EquipmentID             SMALLINT       AUTO_INCREMENT,
     ModelAndMake            VARCHAR(45)    DEFAULT NULL,
@@ -113,7 +113,7 @@ CREATE TABLE Equipment (
     PRIMARY KEY (EquipmentID)
 ) ENGINE=InnoDB;
 
-#Kendra
+
 CREATE TABLE VenueEquipment (
     VenueID                 SMALLINT       NOT NULL,
     EquipmentID             SMALLINT       NOT NULL,
@@ -128,37 +128,30 @@ CREATE TABLE VenueEquipment (
 	    ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-#Jaye
+
 CREATE TABLE Viewer(
     ViewerID                INT UNSIGNED   AUTO_INCREMENT,
-    /*MODIFIED from smallint, we're hoping for a lot of viewers! */
     FirstName               VARCHAR(45)    DEFAULT NULL,
     LastName                VARCHAR(45)    DEFAULT NULL,    
-    ViewerType              CHAR(1)        DEFAULT "N" NOT NULL, #changed to char(1)
-    /* Possible values N for none/normal, C for CrowdFunding, P for 
-    Premium and B for Both */
+    ViewerType              CHAR(1)        DEFAULT "N" NOT NULL, 
     DateOfBirth             DATE           DEFAULT NULL,
     Email                   VARCHAR(50)    DEFAULT NULL,
     PRIMARY KEY (ViewerID)
 ) ENGINE=InnoDB;
 
-#Jaye
+
 CREATE TABLE CrowdFundingViewer(
     ViewerID                INT UNSIGNED   NOT NULL,
     TotalAmountDonated      DECIMAL(9,2)   DEFAULT 0.00,
-    /* MODIFIED from VARCHAR(45).  Allows for donations to sum to 
-    $9,999,999.99 (to be safe).  Do we think less?*/
     PRIMARY KEY (ViewerID),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
-        /* I currently have no idea what these mean */
 ) ENGINE=InnoDB;
 
-#Jaye
+
 CREATE TABLE PremiumViewer(
     ViewerID                INT UNSIGNED   NOT NULL,
-    /* MODIFIED to match */
     RenewalDate             DATE           NOT NULL,
     PRIMARY KEY (ViewerID),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
@@ -166,24 +159,21 @@ CREATE TABLE PremiumViewer(
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-#Jaye
+
 CREATE TABLE ViewerOrder(
     ViewerOrderID           INT UNSIGNED   AUTO_INCREMENT,
-    /* MODIFIED from smallint to unsigned int, allowing for up to
-    ~4 billion orders to be made */
     OrderDate               DATE           NOT NULL,
     ViewedStatus            CHAR(7)        NOT NULL,
     ViewerID                INT UNSIGNED   NOT NULL,
-    /* MODIFIED to match */
     PRIMARY KEY (ViewerOrderID),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-#Jaye
+
 CREATE TABLE ViewerOrderLine(
-    VideoID                 MEDIUMINT      NOT NULL, #changed to match
+    VideoID                 MEDIUMINT      NOT NULL, 
     ViewerOrderID           INT UNSIGNED   NOT NULL,
     FlagPerk                BOOLEAN        NOT NULL,
     PRIMARY KEY (VideoID, ViewerOrderID),
@@ -195,7 +185,7 @@ CREATE TABLE ViewerOrderLine(
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-#Geordie
+
 CREATE TABLE Address(
     AddressID               SMALLINT       AUTO_INCREMENT,
     StreetNumber            SMALLINT       NOT NULL,
@@ -207,12 +197,12 @@ CREATE TABLE Address(
     MinorMunicipality       VARCHAR(50)    DEFAULT NULL,
     MajorMunicipality       VARCHAR(50)    NOT NULL,
     GoverningDistrict       VARCHAR(50)    NOT NULL,
-    PostalArea              VARCHAR(10)    NOT NULL, #changed to 10 as in lecture slide
+    PostalArea              VARCHAR(10)    NOT NULL,
     Country                 VARCHAR(50)    NOT NULL,
     PRIMARY KEY (AddressID)
 ) ENGINE=InnoDB;
 
-#Geordie
+
 CREATE TABLE ViewerAddress(
     ViewerID               INT UNSIGNED     NOT NULL,
     AddressID              SMALLINT         NOT NULL,
@@ -227,7 +217,7 @@ CREATE TABLE ViewerAddress(
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-#Geordie
+
 CREATE TABLE PlayerAddress(
     PlayerID               SMALLINT         NOT NULL,
     AddressID              SMALLINT         NOT NULL,
