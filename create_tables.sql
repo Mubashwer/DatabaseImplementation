@@ -35,7 +35,7 @@ CREATE TABLE Player (
     FirstName               VARCHAR(50)    NOT NULL,
     LastName                VARCHAR(50)    NOT NULL,
     Role                    VARCHAR(50)    NOT NULL,
-    PlayerType              VARCHAR(1)     NOT NULL, #Type is a keyword
+    PlayerType              CHAR(1)        NOT NULL, #Type is a keyword
     ProfileDescription      TEXT           DEFAULT NULL,          
     Email                   VARCHAR(50)    NOT NULL,
     GameHandle              VARCHAR(12)    NOT NULL,
