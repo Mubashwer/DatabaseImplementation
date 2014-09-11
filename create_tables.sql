@@ -133,8 +133,6 @@ CREATE TABLE VenueEquipment (
 
 CREATE TABLE Viewer(
     ViewerID                INT UNSIGNED   AUTO_INCREMENT,
-    FirstName               VARCHAR(45)    DEFAULT NULL,
-    LastName                VARCHAR(45)    DEFAULT NULL,    
     ViewerType              CHAR(1)        DEFAULT "N" NOT NULL, 
     DateOfBirth             DATE           DEFAULT NULL,
     Email                   VARCHAR(50)    DEFAULT NULL,
@@ -147,6 +145,8 @@ CREATE TABLE Viewer(
 
 CREATE TABLE CrowdFundingViewer(
     ViewerID                INT UNSIGNED   NOT NULL,
+    FirstName               VARCHAR(45)    DEFAULT NULL,
+    LastName                VARCHAR(45)    DEFAULT NULL,
     TotalAmountDonated      DECIMAL(9,2)   DEFAULT 0.00,
     PRIMARY KEY (ViewerID),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
