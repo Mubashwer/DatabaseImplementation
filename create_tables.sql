@@ -39,7 +39,7 @@ CREATE TABLE Player (
     ProfileDescription      TEXT           DEFAULT NULL,          
     Email                   VARCHAR(50)    NOT NULL,
     UserName                VARCHAR(12)    NOT NULL,
-    Password                CHAR(128)      NOT NULL,
+    HashedPassword         CHAR(128)      NOT NULL,
     Salt                    CHAR(32)       NOT NULL,
     Phone                   VARCHAR(14)    DEFAULT NULL,
     VoiP                    VARCHAR(30)    NOT NULL,
@@ -137,7 +137,7 @@ CREATE TABLE Viewer(
     DateOfBirth             DATE           DEFAULT NULL,
     Email                   VARCHAR(50)    DEFAULT NULL,
     UserName                VARCHAR(12)    NOT NULL,
-    Password                CHAR(128)      NOT NULL,
+    HashedPassword          CHAR(128)      NOT NULL,
     Salt                    CHAR(32)       NOT NULL,
     PRIMARY KEY (ViewerID)
 ) ENGINE=InnoDB;
