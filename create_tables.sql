@@ -38,9 +38,9 @@ CREATE TABLE Player (
     PlayerType              CHAR(1)        NOT NULL, 
     ProfileDescription      TEXT           DEFAULT NULL,          
     Email                   VARCHAR(50)    NOT NULL,
+    UserName                VARCHAR(12)    NOT NULL,
     Password                CHAR(128)      NOT NULL,
     Salt                    CHAR(32)       NOT NULL,
-    GameHandle              VARCHAR(12)    NOT NULL,
     Phone                   VARCHAR(14)    DEFAULT NULL,
     VoiP                    VARCHAR(30)    NOT NULL,
     PRIMARY KEY (PlayerID),
@@ -138,6 +138,7 @@ CREATE TABLE Viewer(
     ViewerType              CHAR(1)        DEFAULT "N" NOT NULL, 
     DateOfBirth             DATE           DEFAULT NULL,
     Email                   VARCHAR(50)    DEFAULT NULL,
+    UserName                VARCHAR(12)    NOT NULL,
     Password                CHAR(128)      NOT NULL,
     Salt                    CHAR(32)       NOT NULL,
     PRIMARY KEY (ViewerID)
