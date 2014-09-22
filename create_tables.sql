@@ -17,14 +17,15 @@ DROP TABLE IF EXISTS Game;
 
 
 CREATE TABLE Game(
-    GameID                  MEDIUMINT      AUTO_INCREMENT,  
+    GameID                  MEDIUMINT      AUTO_INCREMENT,
     Genre                   VARCHAR(50)    DEFAULT NULL,
     Review                  TEXT           DEFAULT NULL,
     StarRating              SMALLINT       DEFAULT NULL,
     ClassificationRating    VARCHAR(5)     DEFAULT NULL,
     PlatformNotes           TEXT           DEFAULT NULL,
     PromotionLink           VARCHAR(50)    DEFAULT NULL,
-    Cost                    DECIMAL(5,2)   DEFAULT NULL,   
+    Cost                    DECIMAL(5,2)   DEFAULT NULL,
+    GameName		    VARCHAR(85)    NOT NULL,
     PRIMARY KEY (GameID)
 ) ENGINE=InnoDB;
 
