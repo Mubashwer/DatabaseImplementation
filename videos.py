@@ -23,7 +23,7 @@ print """
 print """
 <div class="search_form">
 <h2 class="header">VIDEOS</h2>
-<form action="{}" method="post">
+<form action="video.py" method="post">
     <fieldset id="search">
         <legend>Video Search</legend>
         
