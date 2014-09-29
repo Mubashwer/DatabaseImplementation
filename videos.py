@@ -71,7 +71,67 @@ print """
 </form>
 </div>
 """
+#TODO: not using radio buttons yet
+#Create a dictionary to map names used in HTML form to their corresponding MySQL database attribute names
+form_names = ['video_id', 'game_id', 'game_name', 'instance_run_id', 'instance_run_name', 'price']
+sql_col_names = ['VideoID', 'GameID', 'GameName', 'InstanceRunID', 'InstanceName', 'Price']
+form_to_sql = dict(zip(form_names, sql_col_names))
+    
+form_data = {}
+for name in form_names:
+    form_data[name] = form.getvalue(name)
+        
+#TODO: connect to the correct database
+#db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003", "cisds", "info20003", 3306)
+#cur = db.cursor()
+              
+#The query will be made up of several elements, starting select
+select_elem = 'SELECT'
+              
+# These are the columns we wish to select from each table
+# select_cols[some_table] = [list, of, columns, from, some_table]
+select_cols = {}
+select_cols['Video'] = ['VideoID', 'URL', 'Price', 'VideoType']
+select_cols['Game'] = ['GameID', 'GameName']
+select_cols['InstanceRun'] = ['InstanceRunID', 'InstanceName']
 
+
+#Luckily the column names are unique (except for foreign keys)
+#We compile a list of names and then join them to form a string, with commas seperating
+all_columns = []
+
+for columns in select_cols.values():
+    for column in columns:
+        all_columns.append(column)
+
+columns_elem = ','.join(all_columns)
+
+from_elem = 'FROM'
+
+tables = select_cols.keys()
+tables_elem = ' NATURAL JOIN '.join(tables)
+
+where_elem = 'WHERE'
+
+#TODO add where clauses to conditions_s (based on form data, using like '%term%'
+# convert term to lower case before query? any other parsing?
+conditions = []
+for (form_name, val) in form_data.items():
+    if val:
+        conditions.append(form_to_sql[form_name] + " LIKE '%" + val + "%'") 
+
+conditions_elem = ' AND '.join(conditions)
+
+query_elems = [select_elem, columns_elem, from_elem, tables_elem]
+if conditions:
+    query_elems.append(where_elem)
+    query_elems.append(conditions_elem)
+    
+# Form query by joining it's elements, seperated by spaces, and appending a semicolon
+query = ' '.join(query_elems) + ';'
+
+print query
+#TODO: execute query and return results
 print """
 </body>
 </html>
