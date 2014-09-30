@@ -4,6 +4,7 @@ import sys, cgi, redirect, session
 # Get the session and check if logged in
 sess = session.Session(expires=60*20, cookie_path='/')
 loggedIn = sess.data.get('loggedIn')
+form = cgi.FieldStorage()
 
 # ---------------------------------------------------------------------------------------------------------------------
 # send session cookie
