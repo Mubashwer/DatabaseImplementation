@@ -237,3 +237,41 @@ CREATE TABLE PlayerAddress(
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
+CREATE TABLE InstanceEquipment(
+	InstanceRunID		   SMALLINT   	   	AUTO_INCREMENT,
+	EquipmentID			   SMALLINT 		AUTO_INCREMENT,
+	FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
+		ON DELETE RESTRICT
+		ON UPDATE CASCADE,
+	FOREIGN KEY (EquipmentID) REFERENCES Equipment(EpquipmentID)
+) ENGINE=InnoDB;
+
+CREATE TABLE InstancePlayer(
+	PlayerID 			   SMALLINT		   AUTO_INCREMENT,
+	InstanceRunID    	   SMALLINT        AUTO_INCREMENT,
+	PerformanceNotes       TEXT            DEFAULT NULL,
+	FOREIGN KEY (PlayerID) REFERENCES Player(PlayerID)
+		ON DELETE RESTRICT
+		ON UPDATE CASCADE,
+	FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
+		ON DELETE RESTRICT
+		ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE AccessCode(
+	AccessCodeID 	   SMALLINT        AUTO_INCREMENT, #Can be changed to VARCHAR(6) NOT NULL if letters and numbers make up the access code
+	Description        TEXT            DEFAULT NULL,
+	PRIMARY KEY (AccessCodeID)
+) ENGINE=InnoDB;
+
+CREATE TABLE AccessCodeVideo(
+	AccessCodeID          SMALLINT        NOT NULL,
+	VideoID               SMALLINT        NOT NULL,
+	FOREIGN KEY (AccessCodeID) REFERENCES AccessCode(AccessCodeID)
+		ON DELETE RESTRICT
+		ON UPDATE CASCADE,
+	FOREIGN KEY (VideoID) REFERENCES Video(VideoID)
+		ON DELETE RESTRICT
+		ON UPDATE CASCADE
+) ENGINE=InnoDB;
