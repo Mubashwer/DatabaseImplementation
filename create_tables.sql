@@ -83,6 +83,7 @@ CREATE TABLE Achievement (
 
 CREATE TABLE Video (
     VideoID                 MEDIUMINT      AUTO_INCREMENT, 
+    VideoName               VARCHAR(50)    NOT NULL,
     URL                     VARCHAR(50)    NOT NULL,
     Price                   DECIMAL(5,2)   DEFAULT 0.00,
     VideoType               VARCHAR(45)    DEFAULT NULL,
