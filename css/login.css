@@ -1,0 +1,119 @@
+.main
+{
+    background: black;
+    display: block;
+    margin: 0 auto;
+    height: 40px;
+    
+}
+
+.main a
+{
+    color: #fff;
+    font-size: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    float: left;
+    margin: 10 30;
+    border-radius: 5px 5px 0 0;
+}
+
+.main a:hover { color: light blue; }
+
+
+body {
+    background: #eaeaea;
+    font: 100%/1.5em sans-serif;
+    margin: 0;
+}
+
+#login_form {
+    margin: 150px auto;
+    width: 300px;
+}
+
+#login_form h2 {
+    background-color: #282830;
+    border-radius: 5px 5px 0 0;
+    color: #fff;
+    font-size: 14px;
+    padding: 20px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#login_form input {
+    font-size: 14px;
+}
+
+#login_form fieldset, #greeting #message, #message_fail {
+    background-color: #fff;
+    border-radius: 0 0 5px 5px;
+    padding: 20px;
+    position: relative;
+}
+
+#greeting #message {
+    font-weight: bold;
+}
+
+#greeting #message_fail {
+    font-weight: bold;
+    color: red;
+}
+
+#greeting #redirect {
+    font-style: italic;
+    color: black;
+    font-size:  80%;
+}
+#login_form input[type="text"],
+#login_form input[type="password"] {
+    border: 1px solid #dcdcdc;
+    padding: 12px 10px;
+    width: 238px;
+}
+
+#login_form input[type="text"] {
+    border-radius: 3px 3px 0 0;
+}
+
+#login_form input[type="text"] {
+    border-top: none;
+    border-radius: 0px 0px 3px 3px;
+}
+
+#login_form input[type="submit"] {
+    background: #1dabb8;
+    border-radius: 3px;
+    color: #fff;
+    float: right;
+    font-weight: bold;
+    margin-top: 20px;
+    padding: 12px 20px;
+}
+
+#login_form p.meta {
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#login_form input[type="submit"]:hover { background: #198d98;}
+
+
+#greeting {
+    margin: 150px auto;
+    width: 700px;
+}
+
+#greeting h2 {
+    background-color: #282830;
+    border-radius: 5px 5px 0 0;
+    color: #fff;
+    font-size: 20px;
+    padding: 20px;
+    text-align: center;
+    text-transform: uppercase;
+}
