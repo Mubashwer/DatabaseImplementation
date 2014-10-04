@@ -86,7 +86,7 @@ CREATE TABLE Video (
     VideoName               VARCHAR(50)    NOT NULL,
     URL                     VARCHAR(50)    NOT NULL,
     Price                   DECIMAL(5,2)   DEFAULT 0.00,
-    VideoType               VARCHAR(45)    DEFAULT NULL,
+    VideoType               VARCHAR(45)    DEFAULT 'Non-Premium',
     InstanceRunID           SMALLINT       NOT NULL,
     GameID                  MEDIUMINT      NOT NULL, 
     PRIMARY KEY (VideoID),
