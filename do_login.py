@@ -31,7 +31,7 @@ else:
     form = cgi.FieldStorage()
     if (form.has_key('username') and form.has_key('password')):
         
-        db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "mskh", "C1302762", "mskh", 3306)
+        db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29", "info20003g29", 3306)
         cursor = db.cursor()
         cursor.execute ("""
             SELECT UserName, Salt, HashedPassword
