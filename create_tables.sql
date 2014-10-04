@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS AccessCodeVideo;
+DROP TABLE IF EXISTS AccessCode;
+DROP TABLE IF EXISTS InstancePlayer;
+DROP TABLE IF EXISTS InstanceEquipment;
 DROP TABLE IF EXISTS PlayerAddress;
 DROP TABLE IF EXISTS ViewerAddress;
 DROP TABLE IF EXISTS Address;
@@ -239,39 +243,44 @@ CREATE TABLE PlayerAddress(
 ) ENGINE=InnoDB;
 
 CREATE TABLE InstanceEquipment(
-	InstanceRunID		   SMALLINT   	   	AUTO_INCREMENT,
-	EquipmentID			   SMALLINT 		AUTO_INCREMENT,
-	FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
-		ON DELETE RESTRICT
-		ON UPDATE CASCADE,
-	FOREIGN KEY (EquipmentID) REFERENCES Equipment(EpquipmentID)
+    InstanceRunID          SMALLINT        NOT NULL,
+    EquipmentID            SMALLINT        NOT NULL,
+    PRIMARY KEY (InstanceRunID, EquipmentID),
+    FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+    FOREIGN KEY (EquipmentID) REFERENCES Equipment(EquipmentID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE InstancePlayer(
-	PlayerID 			   SMALLINT		   AUTO_INCREMENT,
-	InstanceRunID    	   SMALLINT        AUTO_INCREMENT,
-	PerformanceNotes       TEXT            DEFAULT NULL,
-	FOREIGN KEY (PlayerID) REFERENCES Player(PlayerID)
-		ON DELETE RESTRICT
-		ON UPDATE CASCADE,
-	FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
-		ON DELETE RESTRICT
-		ON UPDATE CASCADE
+    PlayerID               SMALLINT        NOT NULL,
+    InstanceRunID          SMALLINT        NOT NULL,
+    PerformanceNotes       TEXT            DEFAULT NULL,
+    PRIMARY KEY (InstanceRunID, PlayerID),
+    FOREIGN KEY (PlayerID) REFERENCES Player(PlayerID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+    FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE AccessCode(
-	AccessCodeID 	   SMALLINT        AUTO_INCREMENT, #Can be changed to VARCHAR(6) NOT NULL if letters and numbers make up the access code
-	Description        TEXT            DEFAULT NULL,
-	PRIMARY KEY (AccessCodeID)
+    AccessCodeID          CHAR(32)        NOT NULL,
+    Description           TEXT            DEFAULT NULL,
+    PRIMARY KEY (AccessCodeID)
 ) ENGINE=InnoDB;
 
 CREATE TABLE AccessCodeVideo(
-	AccessCodeID          SMALLINT        NOT NULL,
-	VideoID               SMALLINT        NOT NULL,
-	FOREIGN KEY (AccessCodeID) REFERENCES AccessCode(AccessCodeID)
-		ON DELETE RESTRICT
-		ON UPDATE CASCADE,
-	FOREIGN KEY (VideoID) REFERENCES Video(VideoID)
-		ON DELETE RESTRICT
-		ON UPDATE CASCADE
+    AccessCodeID         CHAR(32)         NOT NULL,
+    VideoID              MEDIUMINT        NOT NULL,
+    PRIMARY KEY (AccessCodeID, VideoID),
+    FOREIGN KEY (AccessCodeID) REFERENCES AccessCode(AccessCodeID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+    FOREIGN KEY (VideoID) REFERENCES Video(VideoID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB;
