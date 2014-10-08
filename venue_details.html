@@ -1,0 +1,128 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Venue</title>
+<link href="css/venue_details.css" rel="stylesheet" type="text/css" media="screen" />
+</head>
+<body>
+
+<div id="header">
+			<div id="navbar">
+				<ul>
+            <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
+            <li><a href="Aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
+            <li><a href="logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
+            <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a>
+              <ul>
+						<li><a href="#" style="text-decoration:none;color:#fff">Video 1</a></li>
+						<li><a href="#" style="text-decoration:none;color:#fff">Video 2</a></li>
+                <li><a href="#" style="text-decoration:none;color:#fff">Video 3</a></li>
+					</ul>
+          </li>
+              
+				</ul>
+			</div>
+			
+  </div>
+  
+  
+  <div class="search_form">
+<h2 class="header">VENUE</h2>
+<form action="update.py" method="post">
+    <fieldset id="update">
+        <legend>Venue Details</legend>
+        
+
+        <div class="textbox">
+            <label for="name">Name:</label>
+            <input name="name" id="name" type="text" />
+        </div>
+
+        <div class="textbox">
+            <label for="Mname">Managed By:</label>
+            <input name="Mname" id="Mname" type="text" />
+        </div>
+      
+     
+        
+         <div class="textbox">
+            <label for="address">Address:</label>
+            <input name="address" id="address" type="text" />
+        </div>
+
+        <div class="textbox">
+            <label for="address2">Address Line 2:</label>
+            <input name="address2" id="address2" type="text" />
+        </div>
+
+        <div class="textbox">
+            <label for="city">City:</label>
+            <input name="city" id="city" type="text" />
+        </div>
+
+        <div class="textbox">
+            <label for="country">Country:</label>
+            <input name="country" id="country" type="text" />
+        </div>
+
+         <div class="textbox">
+            <label for="pcode">Post Code:</label>
+            <input name="pcode" id="pcode" type="text" />
+        </div>
+
+        <div class="textbox">
+            <label for="email">Email:</label>
+            <input name="email" id="email" type="text" />
+        </div>
+      
+         <div class="textbox">
+            <label for="skype">Skype Name:</label>
+            <input name="skype" id="skype" type="text" />
+        </div>
+      
+         <div class="textbox">
+            <label for="role">Role:</label>
+            <input name="role" id="role" type="text" />
+        </div>
+      
+         <div class="textbox">
+            <label for="ph">Platform:</label>
+            <form action="">
+            <select name="platform">
+              <option value="ios">iOS</option>
+              <option value="playstation">Playstation</option>
+              <option value="pc">PC</option>
+              <option value="android">Android</option>
+              <option value="xbox">Xbox</option>
+              <option value="wii">Wii</option>
+              <option value="ouya">Ouya</option>
+              <option value="steam">Steam Machine</option>
+              <option value="3ds">3DS</option>
+              </select>
+            </form>
+        </div>
+      
+         <div class="textbox2">
+            <label for="description">Platform Description:</label>
+            
+           <textarea name="textarea" cols="60" rows="5"></textarea>
+        </div>  
+      
+        <div class="textbox2">
+            <label for="description">Venue Description:</label>
+            
+           <textarea name="textarea" cols="60" rows="5"></textarea>
+        </div>  
+
+
+    </fieldset>
+    <div id="buttons">
+        <input type="reset" value="Reset" />
+        <input type="submit" value="Update" />
+    </div>
+  <div id="mum"> </div>
+</form>
+</div>
