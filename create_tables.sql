@@ -1,7 +1,6 @@
 DROP TABLE IF EXISTS AccessCodeVideo;
 DROP TABLE IF EXISTS AccessCode;
 DROP TABLE IF EXISTS InstancePlayer;
-DROP TABLE IF EXISTS InstanceEquipment;
 DROP TABLE IF EXISTS PlayerAddress;
 DROP TABLE IF EXISTS ViewerAddress;
 DROP TABLE IF EXISTS Address;
@@ -54,6 +53,20 @@ CREATE TABLE Player (
 	    ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+
+CREATE TABLE Venue (
+    VenueID                 SMALLINT       AUTO_INCREMENT,
+    VenueName               VARCHAR(50)    NOT NULL, 
+    VenueDescription        TEXT           DEFAULT NULL,
+    PowerOutlets            SMALLINT       DEFAULT NULL,
+    LightingNotes           TEXT           DEFAULT NULL,
+    SupervisorID            SMALLINT       NOT NULL,
+    PRIMARY KEY (VenueID),
+    FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID)
+	    ON DELETE RESTRICT
+	    ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
    
 CREATE TABLE InstanceRun (
     InstanceRunID           SMALLINT       AUTO_INCREMENT,
@@ -61,8 +74,12 @@ CREATE TABLE InstanceRun (
     InstanceName            VARCHAR(45)    DEFAULT NULL,  
     RecordedTime            DATETIME       DEFAULT NULL,
     CategoryName            VARCHAR(50)    DEFAULT NULL,
+    VenueID                 SMALLINT       NOT NULL,
     PRIMARY KEY (InstanceRunID),
     FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+    FOREIGN KEY (VenueID) REFERENCES Venue(VenueID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -99,20 +116,6 @@ CREATE TABLE Video (
 ) ENGINE=InnoDB;
 
 
-CREATE TABLE Venue (
-    VenueID                 SMALLINT       AUTO_INCREMENT,
-    VenueName               VARCHAR(50)    NOT NULL, 
-    VenueDescription        TEXT           DEFAULT NULL,
-    PowerOutlets            SMALLINT       DEFAULT NULL,
-    LightingNotes           TEXT           DEFAULT NULL,
-    SupervisorID            SMALLINT       NOT NULL,
-    PRIMARY KEY (VenueID),
-    FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID)
-	    ON DELETE RESTRICT
-	    ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-
 CREATE TABLE Equipment (
     EquipmentID             SMALLINT       AUTO_INCREMENT,
     ModelAndMake            VARCHAR(45)    DEFAULT NULL,
@@ -129,10 +132,10 @@ CREATE TABLE VenueEquipment (
     SoftwareVersion         VARCHAR(45)    DEFAULT NULL,
     PRIMARY KEY (VenueID, EquipmentID),
     FOREIGN KEY (VenueID) REFERENCES Venue(VenueID)
-	    ON DELETE RESTRICT
+	    ON DELETE CASCADE
 	    ON UPDATE CASCADE,
     FOREIGN KEY (EquipmentID) REFERENCES Equipment(EquipmentID)
-	    ON DELETE RESTRICT
+	    ON DELETE CASCADE
 	    ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -243,17 +246,6 @@ CREATE TABLE PlayerAddress(
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE InstanceEquipment(
-    InstanceRunID          SMALLINT        NOT NULL,
-    EquipmentID            SMALLINT        NOT NULL,
-    PRIMARY KEY (InstanceRunID, EquipmentID),
-    FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
-    FOREIGN KEY (EquipmentID) REFERENCES Equipment(EquipmentID)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE
-) ENGINE=InnoDB;
 
 CREATE TABLE InstancePlayer(
     PlayerID               SMALLINT        NOT NULL,
