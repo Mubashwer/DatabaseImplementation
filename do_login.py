@@ -24,7 +24,7 @@ if loggedIn:
     </head>
     <body>
     </body>
-    """ % redirect.getQualifiedURL("/~mskh/dbsys/mywork/home.py")
+    """ % redirect.getQualifiedURL("/~mskh/dbsys/dbs2014sm2group29/home.py")
     
 else:
     signedIn = False
@@ -61,10 +61,9 @@ else:
                 salt = row[1]
                 actual_password = row[2]
                 given_password = hashlib.sha512(form["password"].value + salt).hexdigest()
-            
-            if actual_password == given_password:
-                 signedIn = True        
-                 userType = row[3]
+                if actual_password == given_password:
+                     signedIn = True        
+                     userType = row[3]
         
              
         if(signedIn == True):
@@ -79,10 +78,10 @@ else:
         cursor.close()
         db.close()
 
-    whereToNext = "/~mskh/dbsys/mywork/greeting.py" 
+    whereToNext = "/~mskh/dbsys/dbs2014sm2group29/greeting.py" 
     sess.close()
     
-    #redirect to home page or back to the login page
+    #redirect to greeting page
     print """\
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
@@ -94,3 +93,4 @@ else:
     </body>
     #""" % redirect.getQualifiedURL(whereToNext)
 
+​
