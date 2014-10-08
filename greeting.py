@@ -29,11 +29,11 @@ print """
 if not loggedIn:
     status = "Unsuccessful"
     message = "The username or password you've entered doesn't match our records."
-    whereToNext = "/~mskh/dbsys/mywork/login.py"
+    whereToNext = "/~mskh/dbsys/dbs2014sm2group29/login.py"
     div_id = "message_fail" 
     
 elif sess.data.get('userType') == 'S' or sess.data.get('userType') == 'C':
-    db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "mskh", "C1302762", "mskh", 3306)
+    db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29", "info20003g29", 3306)
     cursor = db.cursor()
     
     cursor.execute ("""
@@ -55,7 +55,7 @@ elif sess.data.get('userType') == 'S' or sess.data.get('userType') == 'C':
     firstName = row[0];
     lastName = row[1];
     message = "Welcome back, " + firstName + " " + lastName + "!"
-    whereToNext = "/~mskh/dbsys/mywork/home.py" 
+    whereToNext = "/~mskh/dbsys/dbs2014sm2group29/home.py" 
     # tidy up
     cursor.close()
     db.close()
@@ -64,7 +64,7 @@ else:
     status = "Successful"
     message = "Welcome back!"                        
     div_id = "message"
-    whereToNext = "/~mskh/dbsys/mywork/home.py"                     
+    whereToNext = "/~mskh/dbsys/dbs2014sm2group29/home.py"                     
     
     
 print """
@@ -91,3 +91,4 @@ print """
 </html>
 """
 
+​
