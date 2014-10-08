@@ -1,24 +1,100 @@
-.main
-{
-    background: black;
-    display: block;
-    margin: 0 auto;
-    height: 40px;
+#header ul ul {
+  display:none;
+  position: absolute; top: 100%;
+}
+
+#header ul ul li {
+		float: none; 
+		border-top: 1px solid #6b727c;
+		border-bottom: 1px solid #575f6a;
+		position: left;
+   
+ }
+
+#header ul li:hover > ul{
+  display:block;
+  
+  
+}
+
+
+
+
+#header {
+	position: left;
+	top: -10px;
+	background-color: #3c4543;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+   text-decoration:none;
+}
+
+
+
+#navbar {
+	position: fixed;
+	top:10px;
+	left:0%;
+	margin-left:2px;
+}
+
+ul{
+	list-style-type: none;
+	position: fixed;
+	margin: -10px;
+  text-decoration:none; 
+}
+
+li {
+ background: #1dabb8;
+    border-radius: 3px;
+    color: #fff;
+    float: right;
+    font-weight: bold;
+    margin-top: 0px;                                  
+    padding: 12px 20px;
+    box-shadow:3px 3px 3px #888;
+    text-decoration: none !important;
+ }
+
+li:hover {
+  background: #356094;
+  border: solid 1px #2A4E77;
+  text-decoration: none !important;
+}
+
+h1{
+  float:left;
+  font-size: 20px;
+  background: #1dabb8;
+    border-radius: 3px;
+    color: #fff;
+    font-weight: bold;
+    margin-top: 5px;
+    padding: 2px 5px;
+}
+
+h1:hover {
+  hover: background: #356094;
+    border: solid 1px #2A4E77;
+    text-decoration: none
+}
+
+
+h2{
+  float:left;
+  font-size: 20px;
+  background: #1dabb8;
+    border-radius: 3px;
+    color: #fff;
+    font-weight: bold;
+    margin-top: 5px;
+    padding: 2px 5px;
     
 }
 
-.main a
-{
-    color: #fff;
-    font-size: 30px;
-    text-decoration: none;
-    font-weight: bold;
-    float: left;
-    margin: 10 30;
-    border-radius: 5px 5px 0 0;
-}
 
-.main a:hover { color: light blue; }
+
 
 
 body {
@@ -28,7 +104,7 @@ body {
 }
 
 #login_form {
-    margin: 150px auto;
+    margin: 100px auto;
     width: 300px;
 }
 
@@ -47,7 +123,7 @@ body {
 }
 
 #login_form fieldset, #greeting #message, #message_fail {
-    background-color: #fff;
+    background-color: #d6e5f4;
     border-radius: 0 0 5px 5px;
     padding: 20px;
     position: relative;
@@ -91,29 +167,14 @@ body {
     font-weight: bold;
     margin-top: 20px;
     padding: 12px 20px;
+    box-shadow:3px 3px 3px #888;
 }
 
-#login_form p.meta {
-    color: black;
-    font-size: 14px;
-    font-weight: bold;
-    text-transform: uppercase;
+
+#login_form input[type="submit"]:hover {
+background: #356094;
+    border: solid 1px #2A4E77;
+    text-decoration: none;
+  
 }
 
-#login_form input[type="submit"]:hover { background: #198d98;}
-
-
-#greeting {
-    margin: 150px auto;
-    width: 700px;
-}
-
-#greeting h2 {
-    background-color: #282830;
-    border-radius: 5px 5px 0 0;
-    color: #fff;
-    font-size: 20px;
-    padding: 20px;
-    text-align: center;
-    text-transform: uppercase;
-}
