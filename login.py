@@ -12,7 +12,7 @@ print "%s\nContent-Type: text/html\n" % (sess.cookie)
 # debug - what's in the session
 #print(sess.data)
 #sys.exit()
-loggedIn = 0
+
 if loggedIn:
     
     # redirect to home page
@@ -25,7 +25,7 @@ if loggedIn:
     </head>
     <body>
     </body>
-    """ % redirect.getQualifiedURL("/~mskh/dbsys/mywork/home.py")
+    """ % redirect.getQualifiedURL("/~mskh/dbsys/dbs2014sm2group29/home.py")
     
 else:
 
@@ -74,3 +74,4 @@ else:
 
 # Tidy up and free resources
 sess.close()
+​
