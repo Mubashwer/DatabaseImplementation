@@ -29,7 +29,7 @@ CREATE TABLE Game(
     PlatformNotes           TEXT           DEFAULT NULL,
     PromotionLink           VARCHAR(50)    DEFAULT NULL,
     Cost                    DECIMAL(5,2)   DEFAULT NULL,
-    GameName		    VARCHAR(85)    NOT NULL,
+    GameName                VARCHAR(85)    NOT NULL,
     PRIMARY KEY (GameID)
 ) ENGINE=InnoDB;
 
@@ -261,18 +261,20 @@ CREATE TABLE InstancePlayer(
     PerformanceNotes       TEXT            DEFAULT NULL,
     PRIMARY KEY (InstanceRunID, PlayerID),
     FOREIGN KEY (PlayerID) REFERENCES Player(PlayerID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
 
 CREATE TABLE AccessCode(
     AccessCodeID          CHAR(32)        NOT NULL,
     Description           TEXT            DEFAULT NULL,
     PRIMARY KEY (AccessCodeID)
 ) ENGINE=InnoDB;
+
 
 CREATE TABLE AccessCodeVideo(
     AccessCodeID         CHAR(32)         NOT NULL,
