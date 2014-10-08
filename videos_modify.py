@@ -31,10 +31,10 @@ print """
         <li><a href="logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
         <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a>
         <ul>
-		    <li><a href="#" style="text-decoration:none;color:#fff">Video 1</a></li>
-		    <li><a href="#" style="text-decoration:none;color:#fff">Video 2</a></li>
-             <li><a href="#" style="text-decoration:none;color:#fff">Video 3</a></li>
-		</ul>
+ 		<li><a href="#" style="text-decoration:none;color:#fff">Video 1</a></li>
+		<li><a href="#" style="text-decoration:none;color:#fff">Video 2</a></li>
+             	<li><a href="#" style="text-decoration:none;color:#fff">Video 3</a></li>
+	</ul>
         </li>
               
 	</ul>
