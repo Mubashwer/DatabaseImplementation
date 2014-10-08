@@ -17,7 +17,7 @@ print """
 <meta name="description" content="" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>WWAG Video Search</title>
-<link href="css/login.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="css/video_modify.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
 """
