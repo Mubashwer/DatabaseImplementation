@@ -29,19 +29,44 @@ print """
 <meta name="description" content="" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>Sample Page</title>
-<link href="css/style.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="css/home.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
 """
 
 # Main HTML content, starting with header and main menu
 print """
-    <h1><a href="home.py">Our Demo Page</a></h1>
-    <ul>
-        <li><a href="home.py">Main Page</a></li>
-        <li><a href="home.py?paramName=About">About</a></li>
-        %s
-    </ul>
+    <div id="header">
+			<div id="navbar">
+				<ul>
+            <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
+            <li><a href="Aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
+            <li><a href="logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
+            <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a>
+              <ul>
+						<li><a href="#" style="text-decoration:none;color:#fff">Video 1</a></li>
+						<li><a href="#" style="text-decoration:none;color:#fff">Video 2</a></li>
+                <li><a href="#" style="text-decoration:none;color:#fff">Video 3</a></li>
+					</ul>
+          </li>
+              
+				</ul>
+			</div>
+			
+		</div>
+  
+<body>
+  <p>
+    <div id="background">
+    <img id ="image" src="http://flatlandgamestore.com/wp-content/uploads/2014/05/4513350626.jpg">
+      <p id="text"> WWAG </p>
+      <p id="text2"> The Wil Wheaton Appreciation Guild </p>
+  </div>
+  
+  <div id="name">
+    <p>WWWAG</p>
+  </div>
+    
 """ % ( "<li><a href=\"do_logout.py\"><font color=red>Logout</font></a></li>" if sess.data.get('loggedIn') else "<li><a href=\"login.py\">Login</a></li>")
 
 # If we passed a paramaeter do something
