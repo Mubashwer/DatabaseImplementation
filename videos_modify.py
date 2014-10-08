@@ -40,7 +40,7 @@ print """
 	</ul>
 	</div>
 </div>
-
+"""
 
 print """
 <div class="search_form">
