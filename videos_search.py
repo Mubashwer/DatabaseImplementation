@@ -161,7 +161,7 @@ cursor.execute(query.format(10))
 rows = cursor.fetchall()
 
 # print results in table
-print '<table>'
+print '<table class="gridtable">'
 print '<tr><th>GameID</th><th>GameName</th><th>VideoID</th><th>VideoName</th><th>Price</th><th>VideoType</th><th>InstanceRunID</th><th>InstanceRunName</th></tr>'
 for row in rows:
     print '<tr>'
