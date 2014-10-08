@@ -23,11 +23,24 @@ print """
 """
 
 print """
-<div class="main">
-    <hi><a href="home.py">HOME</a></h1>
-    <hi><a href="home.py">ABOUT US</a></h1>
+<div id="header">
+	<div id="navbar">
+	<ul>
+        <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
+        <li><a href="Aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
+        <li><a href="logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
+        <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a>
+        <ul>
+		    <li><a href="#" style="text-decoration:none;color:#fff">Video 1</a></li>
+		    <li><a href="#" style="text-decoration:none;color:#fff">Video 2</a></li>
+             <li><a href="#" style="text-decoration:none;color:#fff">Video 3</a></li>
+		</ul>
+        </li>
+              
+	</ul>
+	</div>
 </div>
-"""
+
 
 print """
 <div class="search_form">
