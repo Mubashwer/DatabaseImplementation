@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS AccessCodeVideo;
 DROP TABLE IF EXISTS AccessCode;
+DROP TABLE IF EXISTS InstanceEquipment
 DROP TABLE IF EXISTS InstancePlayer;
 DROP TABLE IF EXISTS PlayerAddress;
 DROP TABLE IF EXISTS ViewerAddress;
@@ -242,6 +243,19 @@ CREATE TABLE PlayerAddress(
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
     FOREIGN KEY (AddressID) REFERENCES Address(AddressID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+
+CREATE TABLE InstanceEquipment(
+    InstanceRunID          SMALLINT        NOT NULL,
+    EquipmentID            SMALLINT        NOT NULL,
+    PRIMARY KEY (InstanceRunID, EquipmentID),
+    FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+    FOREIGN KEY (EquipmentID) REFERENCES Equipment(EquipmentID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
