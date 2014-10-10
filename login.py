@@ -12,7 +12,7 @@ print "%s\nContent-Type: text/html\n" % (sess.cookie)
 # debug - what's in the session
 #print(sess.data)
 #sys.exit()
-
+loggedIn = 0;
 if loggedIn:
     
     # redirect to home page
@@ -45,25 +45,19 @@ else:
 
     # Main HTML content, starting with header and main menu
     print """
-    <div id="header">
-		<div id="navbar">
-			<ul>
-            <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
-            <li><a href="Aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
-            <li><a href="logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
-            <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a>
-                <ul>
-					<li><a href="#" style="text-decoration:none;color:#fff">Video 1</a></li>
-					<li><a href="#" style="text-decoration:none;color:#fff">Video 2</a></li>
-                    <li><a href="#" style="text-decoration:none;color:#fff">Video 3</a></li>
-				</ul>
-          </li>
+<div id="header">
+    <div id="navbar">
+    <ul>
+        <li><a href="login.py" style="text-decoration:none;color:#fff">Log In</a></li>
+        <li><a href="Aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
+        
+        <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a></li>
+        <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
               
-			</ul>
-		</div>
-			
-	</div>
-    """
+    </ul>
+    </div>
+</div>
+"""
 
     print """
         <div id = "login_form">
@@ -88,4 +82,3 @@ else:
 
 # Tidy up and free resources
 sess.close()
-​
