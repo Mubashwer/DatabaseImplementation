@@ -49,9 +49,9 @@ if (not loggedIn or not userType == 'S'):
     <div id="navbar">
     <ul>
         <li><a href="{}" style="text-decoration:none;color:#fff">{}</a></li>
-        <li><a href="Aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
+        <li><a href="aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
         
-        <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a></li>
+        <li><a href="videos_search.py" style="text-decoration:none;color:#fff">Videos</a></li>
         <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
               
     </ul>
