@@ -219,6 +219,7 @@ if rows != None:
         print '<tr>'
         print '<form action="instance_runs.py" method="post">'
         i = 0
+        i += 1
         print '<td>{}</td>'.format(row[i])
         # Print each field of row as textbox
         for key in keys[1:]:
