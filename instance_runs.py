@@ -15,7 +15,7 @@ form = cgi.FieldStorage()
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Only logged in users who are players can access this page
-if (0==1) and (not loggedIn or not userType == 'S'):
+if not loggedIn or not userType == 'S':
     # redirect to home page
     print """\
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -45,10 +45,22 @@ print """
 """
 
 print """
-<div class="main">
-    <hi><a href="home.py">HOME</a></h1>
-    <hi><a href="home.py">ABOUT US</a></h1>
-</div>
+<div id="header">
+            <div id="navbar">
+                <ul>
+            <li><a href="do_logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
+            <li><a href="aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
+            <li><a href="players.py" style="text-decoration:none;color:#fff">Players</a></li>
+            <li><a href="games.py" style="text-decoration:none;color:#fff">Games</a></li>
+            <li><a href="instance_runs.py" style="text-decoration:none;color:#fff">Instance Runs</a></li>
+            <li><a href="achievements.py" style="text-decoration:none;color:#fff">Achievements</a></li>
+            <li><a href="viewers.py" style="text-decoration:none;color:#fff">Viewers</a></li>
+            <li><a href="videos_modify.py" style="text-decoration:none;color:#fff">Videos</a></li>
+            <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
+                </ul>
+            </div>
+            
+  </div>
 """
 
 print """
@@ -212,4 +224,4 @@ print """
 # Tidy up and free resources
 cursor.close()
 db.close()
-sess.close()                                                                    
+sess.close()                                                                                        
