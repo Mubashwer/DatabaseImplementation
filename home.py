@@ -1,5 +1,5 @@
 # The libraries we'll need
-import sys, session, cgi, MySQLdb
+import sys, cgi, redirect, session, MySQLdb, warnings
 
 # Get a DB connection
 db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003", "cisds", "info20003", 3306)
@@ -15,8 +15,6 @@ if params.has_key('paramName'):
 
     foundParam=1
 
-# The libraries we'll need
-import sys, cgi, redirect, session, MySQLdb, warnings
 
 warnings.filterwarnings('error', category=MySQLdb.Warning)
 # Get the session and check if logged in
@@ -32,7 +30,7 @@ form = cgi.FieldStorage()
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-href = {0: ('Log In', 'login.py'), 1: ('Log Out', 'do_logout.py')}
+href = {None: ('Log In', 'login.py'), 0: ('Log In', 'login.py'), 1: ('Log Out', 'do_logout.py')}
 
 print """
 <html xmlns="http://www.w3.org/1999/xhtml">
