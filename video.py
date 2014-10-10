@@ -6,7 +6,7 @@ sess = session.Session(expires=60*20, cookie_path='/')
 loggedIn = sess.data.get('loggedIn')
 form = cgi.FieldStorage()
 
-#TODO db=MySQLdb.connnect(...)
+#TODO db=MySQLdb.connnect(...g09', 'enigma...)
 
 video_id = form.getvalue("video_id")
 
@@ -18,9 +18,12 @@ instance_id = rows0[0]["InstanceRunID"]
 
 q1 = "SELECT * FROM InstanceRun NATURAL JOIN InstancePlayer NATURAL JOIN Player WHERE\
 InstanceRunID = {};".format(instance_id)
-
 q2 = "SELECT * FROM Video NATURAL JOIN Game WHERE VideoID = {};".format(video_id)
-queries = [q0,q1,q2]
+q3 = "SELECT * FROM Equipment NATURAL JOIN InstanceEquipment\
+NATURAL JOIN InstanceRun WHERE InstanceRunId = {};".format(instance_id)
+
+queries = [q0,q1,q2,q3]
+#Corresponding to [video/instance, player, game, equipment]
 
 for query in queries:
     db.execute(query)
@@ -46,6 +49,8 @@ To get a unique, alphabetically sorted list of usernames, call uniq on the list 
     uniq(get_all("UserName", 1))
 
 """
+#TODO: print relevant info from 4 queries and add order button, with possible access code input,
+#conditional on viewer type
 
 ### HELPERS ###
 def rows_from_res(res):
