@@ -4,10 +4,10 @@
 }
 
 #header ul ul li {
-		float: none; 
-		border-top: 1px solid #6b727c;
-		border-bottom: 1px solid #575f6a;
-		position: left;
+        float: none; 
+        border-top: 1px solid #6b727c;
+        border-bottom: 1px solid #575f6a;
+        position: left;
    
  }
 
@@ -20,11 +20,11 @@
 
 
 #header {
-	position: left;
-	top: -10px;
-	background-color: #3c4543;
-	border-top-left-radius: 15px;
-	border-top-right-radius: 15px;
+    position: left;
+    top: -10px;
+    background-color: #3c4543;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
    text-decoration:none;
    
 }
@@ -32,17 +32,17 @@
 
 
 #navbar {
-	position: fixed;
-	top:10px;
-	left:0%;
-	margin-left:2px;
+    position: fixed;
+    top:10px;
+    left:0%;
+    margin-left:2px;
   z-index: 100;
 }
 
 ul{
-	list-style-type: none;
-	position: fixed;
-	margin: -10px;
+    list-style-type: none;
+    position: fixed;
+    margin: -10px;
   text-decoration:none; 
 }
 
@@ -119,14 +119,12 @@ h3:hover {
   text-decoration: none
 }
 
-
-
-#image{
-  width:100%;
-  position:absolute;
-  left:0;
-  top:0;
-  
+body {
+    background-image: url('http://flatlandgamestore.com/wp-content/uploads/2014/05/4513350626.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    font: 100%/1.5em sans-serif;
+    margin: 0;
 }
 
 #text{
