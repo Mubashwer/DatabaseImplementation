@@ -27,4 +27,4 @@ print """\
 </head>
 <body>
 </body>
-""" % redirect.getQualifiedURL("/~seanbm/Junk/W9LectFiles/home.py")
+""" % redirect.getQualifiedURL("/~mskh/dbsys/dbs2014sm2group29/home.py")
