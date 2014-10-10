@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS AccessCodeVideo;
 DROP TABLE IF EXISTS AccessCode;
-DROP TABLE IF EXISTS InstanceEquipment
 DROP TABLE IF EXISTS InstancePlayer;
+DROP TABLE IF EXISTS InstanceEquipment;
 DROP TABLE IF EXISTS PlayerAddress;
 DROP TABLE IF EXISTS ViewerAddress;
 DROP TABLE IF EXISTS Address;
@@ -12,10 +12,10 @@ DROP TABLE IF EXISTS CrowdFundingViewer;
 DROP TABLE IF EXISTS Viewer;
 DROP TABLE IF EXISTS VenueEquipment;
 DROP TABLE IF EXISTS Equipment;
-DROP TABLE IF EXISTS Venue;
 DROP TABLE IF EXISTS Video;
 DROP TABLE IF EXISTS Achievement;
 DROP TABLE IF EXISTS InstanceRun;
+DROP TABLE IF EXISTS Venue;
 DROP TABLE IF EXISTS Player;
 DROP TABLE IF EXISTS Game;
 
@@ -75,12 +75,8 @@ CREATE TABLE InstanceRun (
     InstanceName            VARCHAR(45)    DEFAULT NULL,  
     RecordedTime            DATETIME       DEFAULT NULL,
     CategoryName            VARCHAR(50)    DEFAULT NULL,
-    VenueID                 SMALLINT       NOT NULL,
     PRIMARY KEY (InstanceRunID),
     FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
-    FOREIGN KEY (VenueID) REFERENCES Venue(VenueID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -243,19 +239,6 @@ CREATE TABLE PlayerAddress(
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
     FOREIGN KEY (AddressID) REFERENCES Address(AddressID)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-
-CREATE TABLE InstanceEquipment(
-    InstanceRunID          SMALLINT        NOT NULL,
-    EquipmentID            SMALLINT        NOT NULL,
-    PRIMARY KEY (InstanceRunID, EquipmentID),
-    FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
-    FOREIGN KEY (EquipmentID) REFERENCES Equipment(EquipmentID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
