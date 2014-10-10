@@ -15,26 +15,35 @@ if params.has_key('paramName'):
 
     foundParam=1
 
-# Manage the session
-sess = session.Session(expires=20*60, cookie_path='/')
+# The libraries we'll need
+import sys, cgi, redirect, session, MySQLdb, warnings
+
+warnings.filterwarnings('error', category=MySQLdb.Warning)
+# Get the session and check if logged in
+sess = session.Session(expires=60*20, cookie_path='/')
+loggedIn = sess.data.get('loggedIn')
+userType = sess.data.get('userType')
 
 # send session cookie
 print "%s\nContent-Type: text/html\n" % (sess.cookie)
-    
-# Send head of HTML document, pointing to our style sheet
+
+# get form data
+form = cgi.FieldStorage()
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+
 print """
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>Sample Page</title>
-<link href="css/home.css" rel="stylesheet" type="text/css" media="screen" />
+<title>WWAG Home</title>
+<link href="home.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
 """
-
-# Main HTML content, starting with header and main menu
 if (not loggedIn or not userType == 'N'):
    
     print """
@@ -73,6 +82,8 @@ else:
             
   </div>
 """
+
+print """
   
 <body>
   <p>
@@ -86,7 +97,8 @@ else:
     <p>WWWAG</p>
   </div>
     
-""" % ( "<li><a href=\"do_logout.py\"><font color=red>Logout</font></a></li>" if sess.data.get('loggedIn') else "<li><a href=\"login.py\">Login</a></li>")
+"""
+
 
 # If we passed a paramaeter do something
 if foundParam == 1:
