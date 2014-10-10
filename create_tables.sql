@@ -244,6 +244,19 @@ CREATE TABLE PlayerAddress(
 ) ENGINE=InnoDB;
 
 
+CREATE TABLE InstanceEquipment(
+    InstanceRunID          SMALLINT        NOT NULL,
+    EquipmentID            SMALLINT        NOT NULL,
+    PRIMARY KEY (InstanceRunID, EquipmentID),
+    FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+    FOREIGN KEY (EquipmentID) REFERENCES Equipment(EquipmentID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+
 CREATE TABLE InstancePlayer(
     PlayerID               SMALLINT        NOT NULL,
     InstanceRunID          SMALLINT        NOT NULL,
