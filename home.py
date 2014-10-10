@@ -1,22 +1,6 @@
 # The libraries we'll need
-import sys, cgi, redirect, session, MySQLdb, warnings
+import sys, cgi, redirect, session
 
-# Get a DB connection
-db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003", "cisds", "info20003", 3306)
-cursor = db.cursor()
-
-# What came on the URL string?
-params = cgi.FieldStorage()
-
-foundParam=0
-
-# Check if the parameter we are looking for was passed
-if params.has_key('paramName'):
-
-    foundParam=1
-
-
-warnings.filterwarnings('error', category=MySQLdb.Warning)
 # Get the session and check if logged in
 sess = session.Session(expires=60*20, cookie_path='/')
 loggedIn = sess.data.get('loggedIn')
@@ -86,43 +70,15 @@ print """
 <body>
   <p>
     <div id="background">
-    <img id ="image" src="http://flatlandgamestore.com/wp-content/uploads/2014/05/4513350626.jpg">
       <p id="text"> WWAG </p>
       <p id="text2"> The Wil Wheaton Appreciation Guild </p>
   </div>
-  
-  <div id="name">
-    <p>WWWAG</p>
-  </div>
-    
 """
 
-
-# If we passed a paramaeter do something
-if foundParam == 1:
-    if params['paramName'].value == "About":
-        print """
-            <h1>Welcome to the About Page</h1>
-        """
-
-            
-# otherwise this is the 1st time we hit the page
-else:
-    
-    # Just landed on the home page, nothing clicked yet.
-    print """
-        <h1>Welcome to our Sample Page - %s</h1>
-    """ % sess.data.get('userName')
-
-
-
-# Footer at the end
 print """
-    <p>This is the footer</p>
 </body>
 </html>
 """
 
 # Tidy up and free resources
-db.close()
 sess.close()
