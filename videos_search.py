@@ -1,14 +1,20 @@
 # The libraries we'll need
-import sys, cgi, redirect, session, MySQLdb
+import sys, cgi, redirect, session, MySQLdb, warnings
 
+warnings.filterwarnings('error', category=MySQLdb.Warning)
 # Get the session and check if logged in
 sess = session.Session(expires=60*20, cookie_path='/')
-#loggedIn = sess.data.get('loggedIn') #anybody can access this page
+loggedIn = sess.data.get('loggedIn')
+userType = sess.data.get('userType')
+
+# send session cookie
+print "%s\nContent-Type: text/html\n" % (sess.cookie)
+
+# get form data
 form = cgi.FieldStorage()
 
 # ---------------------------------------------------------------------------------------------------------------------
-# send session cookie
-print "%s\nContent-Type: text/html\n" % (sess.cookie)
+
 
 print """
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -17,29 +23,47 @@ print """
 <meta name="description" content="" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>WWAG Video Search</title>
-<link href="css/video_search.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="video_search.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
 """
-
-print """
+if (not loggedIn or not userType == 'S'):
+   
+    print """
 <div id="header">
-	<div id="navbar">
-	<ul>
-            <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
-            <li><a href="Aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
-            <li><a href="logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
-            <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a>
-             	<ul>
-			<li><a href="#" style="text-decoration:none;color:#fff">Video 1</a></li>
-			<li><a href="#" style="text-decoration:none;color:#fff">Video 2</a></li>
-                	<li><a href="#" style="text-decoration:none;color:#fff">Video 3</a></li>
-		</ul>
-        	 </li>
+    <div id="navbar">
+    <ul>
+        <li><a href="login.py" style="text-decoration:none;color:#fff">Log In</a></li>
+        <li><a href="Aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
+        
+        <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a></li>
+        <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
               
-		</ul>
-	</div>
+    </ul>
+    </div>
 </div>
+"""
+
+
+else:
+    
+    print """
+<div id="header">
+            <div id="navbar">
+                <ul>
+             <li><a href="logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
+            <li><a href="Aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
+            <li><a href="players.py" style="text-decoration:none;color:#fff">Players</a></li>
+            <li><a href="games.py" style="text-decoration:none;color:#fff">Games</a></li>
+            <li><a href="instance.py" style="text-decoration:none;color:#fff">Instance Runs</a></li>
+            <li><a href="achievements.py" style="text-decoration:none;color:#fff">Achievements</a></li>
+            <li><a href="Viewers.py" style="text-decoration:none;color:#fff">Viewers</a></li>
+            <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a></li>
+            <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
+                </ul>
+            </div>
+            
+  </div>
 """
 
 print """
@@ -177,5 +201,4 @@ print """
 """
 
 # Tidy up and free resources
-sess.close()
-​
+sess.close()​​​
