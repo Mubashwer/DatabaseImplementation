@@ -188,8 +188,8 @@ if rows != None:
         print '<tr>'
         print '<form action="instance_runs.py" method="post">'
         i = 0
-        i += 1
         print '<td><input name="InstanceRunID" id="InstanceRunID" type="hidden" value = "{0}" />{0}</td>'.format(row[i])
+        i += 1
         # Print each field of row as textbox
         for key in keys[1:]:
             if row[i] == None:
@@ -212,5 +212,4 @@ print """
 # Tidy up and free resources
 cursor.close()
 db.close()
-sess.close()                                                                                        
-
+sess.close()                                                                    
