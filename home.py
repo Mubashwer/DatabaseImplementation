@@ -32,6 +32,7 @@ form = cgi.FieldStorage()
 
 # ---------------------------------------------------------------------------------------------------------------------
 
+href = {0: ('Log In', 'login.py'), 1: ('Log Out', 'do_logout.py')}
 
 print """
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -40,17 +41,16 @@ print """
 <meta name="description" content="" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>WWAG Home</title>
-<link href="home.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="css/home.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
 """
-if (not loggedIn or not userType == 'N'):
-   
+if (not loggedIn or not userType == 'S'):
     print """
 <div id="header">
     <div id="navbar">
     <ul>
-        <li><a href="login.py" style="text-decoration:none;color:#fff">Log In</a></li>
+        <li><a href="{}" style="text-decoration:none;color:#fff">{}</a></li>
         <li><a href="Aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
         
         <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a></li>
@@ -59,7 +59,7 @@ if (not loggedIn or not userType == 'N'):
     </ul>
     </div>
 </div>
-"""
+""".format(href[loggedIn][1], href[loggedIn][0])
 
 
 else:
@@ -68,14 +68,14 @@ else:
 <div id="header">
             <div id="navbar">
                 <ul>
-             <li><a href="logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
-            <li><a href="Aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
+            <li><a href="do_logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
+            <li><a href="aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
             <li><a href="players.py" style="text-decoration:none;color:#fff">Players</a></li>
             <li><a href="games.py" style="text-decoration:none;color:#fff">Games</a></li>
-            <li><a href="instance.py" style="text-decoration:none;color:#fff">Instance Runs</a></li>
+            <li><a href="instance_runs.py" style="text-decoration:none;color:#fff">Instance Runs</a></li>
             <li><a href="achievements.py" style="text-decoration:none;color:#fff">Achievements</a></li>
-            <li><a href="Viewers.py" style="text-decoration:none;color:#fff">Viewers</a></li>
-            <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a></li>
+            <li><a href="viewers.py" style="text-decoration:none;color:#fff">Viewers</a></li>
+            <li><a href="videos_modify.py" style="text-decoration:none;color:#fff">Videos</a></li>
             <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
                 </ul>
             </div>
