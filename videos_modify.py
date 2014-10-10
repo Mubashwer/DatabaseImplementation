@@ -1,72 +1,67 @@
 # The libraries we'll need
-import sys, cgi, redirect, session, MySQLdb, warnings
+import sys, cgi, redirect, session, MySQLdb
 
-warnings.filterwarnings('error', category=MySQLdb.Warning)
 # Get the session and check if logged in
 sess = session.Session(expires=60*20, cookie_path='/')
 loggedIn = sess.data.get('loggedIn')
 userType = sess.data.get('userType')
-
-# send session cookie
-print "%s\nContent-Type: text/html\n" % (sess.cookie)
-
-# get form data
 form = cgi.FieldStorage()
 
 # ---------------------------------------------------------------------------------------------------------------------
 # send session cookie
 print "%s\nContent-Type: text/html\n" % (sess.cookie)
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Only logged in users who are players can access this page
+if not loggedIn or not userType == 'S':
+    # redirect to home page
+    print """\
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="refresh" content="0;url=%s">
+    </head>
+    <body>
+    </body>
+    """ % redirect.getQualifiedURL("/~mskh/dbsys/dbs2014sm2group29/home.py")
+    sess.close()   
+    sys.exit(0)
+
+# ---------------------------------------------------------------------------------------------------------------------
+    
 print """
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>WWAG Video Search</title>
+<title>WWAG Instance Runs</title>
 <link href="css/video_modify.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
 """
 
-if (not loggedIn or not userType == 'N'):
-   
-    print """
-<div id="header">
-    <div id="navbar">
-    <ul>
-        <li><a href="login.py" style="text-decoration:none;color:#fff">Log In</a></li>
-        <li><a href="Aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
-        
-        <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a></li>
-        <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
-              
-    </ul>
-    </div>
-</div>
-"""
 
-
-else:
-    
-    print """
+print """
 <div id="header">
             <div id="navbar">
                 <ul>
-             <li><a href="logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
-            <li><a href="Aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
+            <li><a href="do_logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
+            <li><a href="aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
             <li><a href="players.py" style="text-decoration:none;color:#fff">Players</a></li>
             <li><a href="games.py" style="text-decoration:none;color:#fff">Games</a></li>
-            <li><a href="instance.py" style="text-decoration:none;color:#fff">Instance Runs</a></li>
+            <li><a href="instance_runs.py" style="text-decoration:none;color:#fff">Instance Runs</a></li>
             <li><a href="achievements.py" style="text-decoration:none;color:#fff">Achievements</a></li>
-            <li><a href="Viewers.py" style="text-decoration:none;color:#fff">Viewers</a></li>
-            <li><a href="video_search.py" style="text-decoration:none;color:#fff">Videos</a></li>
+            <li><a href="viewers.py" style="text-decoration:none;color:#fff">Viewers</a></li>
+            <li><a href="videos_modify.py" style="text-decoration:none;color:#fff">Videos</a></li>
             <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
                 </ul>
             </div>
             
   </div>
 """
+
 
 print """
 <div class="search_form">
@@ -246,7 +241,7 @@ cursor.execute(query.format(10))
 rows = cursor.fetchall()
 
 # print results in table
-print '<table class="gridtable">'
+print '<table>'
 print '<tr><th>GameID</th><th>GameName</th><th>VideoID</th><th>VideoName</th><th>Price</th><th>VideoType</th><th>URL</th><th>InstanceRunID</th><th>InstanceRunName</th><th>Update</th><th>Delete</th></tr>'
 for row in rows:
     print '<tr>'
@@ -280,4 +275,3 @@ print """
 
 # Tidy up and free resources
 sess.close()
-​
