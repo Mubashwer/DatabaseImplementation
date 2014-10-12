@@ -51,6 +51,64 @@ To get a unique, alphabetically sorted list of usernames, call uniq on the list 
 """
 #TODO: print relevant info from 4 queries and add order button, with possible access code input,
 #conditional on viewer type
+#Print Video info
+video_info = []
+
+video_info.append("Name: " + all_rows[0][0]["VideoName"])
+video_type = all_rows[0][0]["VideoType"]
+video_info.append("Type: " + video_type)
+video_info.append("Price: " + all_rows[0][0]["Price"])
+url = all_rows[0][0]["URL"]
+if (video_type in ["Non-Premium", "Free"]):
+    video_info.append("Url: " + wrap_link(url, url))
+
+video_html = ""
+for info in video_infos:
+    video_html += wrap_p(info, str(video_info.index(info)))
+video_html = wrap_div(video_html, div_id="video_info")
+
+print(video_html)
+
+#Print Player info
+players = uniq(get_all(col_name = "UserName", query_index = 1))
+
+player_html = wrap_tr(wrap(td("Participating Players:")))
+for player in players:
+    #TODO wrap players in <a>s to link to player info page
+    player_html += wrap_tr(wrap_td(player))
+player_html = wrap_div(wrap_table(player_html), 'player_info')
+
+print(player_html)
+
+#Print Game info
+#TODO add link  to game info page
+game_name = all_rows[2][0]["GameName"]
+print(wrap_div(wrap_p("Game: " + game_name)))
+
+#Print equipment info
+equipments = get_all(col_name = "ModelAndMake", query_index = 3)
+equipment_html = wrap_tr(wrap(td("Equipment Used:")))
+for equipment in equipments:
+    #TODO wrap equipments in <a>s to link to equipment info page
+    equipment_html += wrap_tr(wrap_td(equipment))
+equipment_html = wrap_div(wrap_table(equipment_html), div_id = 'equipment_info')
+print(equipment_html)
+
+#Print InstanceRun info
+
+ir_info = []
+
+ir_info.append("Instance Run Details:")
+ir_info.append("Name: " + all_rows[1][0]["InstanceName"])
+ir_info.append("Recorded time: " + all_rows[1][0]["RecordedTime"])
+ir_info.append("Category name: " + all_rows[1][0]["CategoryName"])
+
+ir_html =""
+for line in ir_info:
+    ir_html += wrap_p(line)
+ir_html = wrap_div(ir_html, div_id = "instance_run_info")
+
+print(ir_html)
 
 ### HELPERS ###
 def rows_from_res(res):
@@ -64,3 +122,21 @@ def get_all(col_name = None, query_index = None):
     
 def uniq(l):
     return sorted(list(set(l)))#Cast to set, then back to remove dups
+
+def wrap_p(text, p_id=None):
+    if p_id:
+        return "<p id='{}'>".format(p_id) + text + "</p>\n"
+    else:
+        return "<p>" + text + "</p>\n"
+
+def wrap_link(text, href=None):
+    return "<a href='{}'>".format(href) + text + "</a>"
+
+def wrap_tr(text):
+    return "<tr>" + text + "</tr>\n"
+
+def wrap_td(text):
+    return "<td>" + text + "</td>"
+
+def wrap_table(text):
+    return "<table>\n" + text + "\n</table>\n"
