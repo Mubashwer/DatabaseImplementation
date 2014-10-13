@@ -45,12 +45,11 @@ def wrap_table(text):
 db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29", "info20003g29", 3306)
 
 video_id = form.getvalue("video_id")
-#TESTING
-"""
-if not video_id:
-    video_id = 1
-"""
 
+if not video_id:
+    print "Status: 307 Temporary Redirect"
+    print "Location: videos_search.py"
+    
 q0 = "SELECT * FROM Video NATURAL JOIN InstanceRun WHERE VideoID = '{}'".format(video_id)
 db.query(q0)
 res0 = db.store_result()
