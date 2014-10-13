@@ -162,7 +162,7 @@ for row in rows:
     print '<tr>'
     video_id = row[2];
     for element in row:
-        print '<td><span class="link"><a href="video.py?VideoID={}">{}</a></span></td>'.format(video_id, element)
+        print '<td><span class="link"><a href="video.py?video_id={}">{}</a></span></td>'.format(video_id, element)
     print '</tr>'
 print '</table>'    
 
