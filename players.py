@@ -39,7 +39,7 @@ print """
 <meta name="description" content="" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>WWAG Players</title>
-<link href="css/video_search.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="css/video_modify.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
 """
@@ -163,6 +163,9 @@ if form.getvalue("submit") == "Insert":
     fields['Salt'] = uuid.uuid4().hex
     if fields["HashedPassword"] != 'DEFAULT':
         fields["HashedPassword"] = hashlib.sha512(form.getvalue('HashedPassword') + fields['Salt']).hexdigest()
+    else:
+        print '<div class = "error">Insert Error! Password is empty.</div>'
+        sys.exit(0);
     
     fields['Salt'] = "'" + fields['Salt'] + "'"
     fields['HashedPassword'] = "'" + fields['HashedPassword'] + "'"
@@ -207,7 +210,7 @@ except Exception, e:
     print '<div class = "error">Search Error! {}.</div>'.format(repr(e))
     
 ####### DISPLAY RESULTS TABLE  #############################################################################################
-print '<table>'
+print '<table class="gridtable" align="center">'
 
 # Print column headers    
 print '<tr>'
