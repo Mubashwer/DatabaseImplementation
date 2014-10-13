@@ -192,7 +192,7 @@ for key in fields:
     if fields[key] != 'DEFAULT':
         if key in ['PlayerID', 'SupervisorID']:
             condition += "{} = {} AND ".format(key, fields[key])
-        if key == 'HashedPassword':
+        elif key in ['HashedPassword', 'Salt']:
             continue         
         else:
             condition += "{} LIKE '%{}%' AND ".format(key, form.getvalue(key))                                                                                          
@@ -234,4 +234,4 @@ print """
 # Tidy up and free resources
 cursor.close()
 db.close()
-sess.close()                                                                                        
+sess.close()
