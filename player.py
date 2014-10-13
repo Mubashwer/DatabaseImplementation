@@ -16,7 +16,7 @@ form = cgi.FieldStorage()
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Only logged in users who are players can access this page
-if (not loggedIn or not userType == 'S'):
+if 0 == 1 and (not loggedIn or not userType == 'S'):
     # redirect to home page
     print """\
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -220,7 +220,7 @@ if form.getvalue("submit") == "Delete":
         print '<div class = "error">Delete Error! {}.</div>'.format(repr(e))
 
 ######## If DELETE ADDRESS button is pressed then ... ###########################################################################        
-if form.getvalue("submit") == "UpdateAddress":
+if form.getvalue("submit") == "Change":
     query = "UPDATE PlayerAddress SET AddressID = {0}, StartDate = {1}, EndDate = {2} WHERE PlayerID = {3};".format(fields[keys[-3]], fields[keys[-2]], fields[keys[-1]], fields[keys[0]])
     try:   
         cursor.execute(query)
@@ -231,7 +231,7 @@ if form.getvalue("submit") == "UpdateAddress":
         
 ######## If UPDATE ADDRESS button is pressed then ... ###########################################################################        
 if form.getvalue("submit") == "DeleteAddress":
-    query = "DELETE FROM PlayerAddress WHERE PlayerID = {} AND AddressID = {};".format(fields[keys[-3]], fields[keys[0]])
+    query = "DELETE FROM PlayerAddress WHERE PlayerID = {1} AND AddressID = {0}; DELETE FROM Address WHERE AddressID = {0};".format(fields[keys[-3]], fields[keys[0]])
     try:   
         cursor.execute(query)
         db.commit()
@@ -252,11 +252,12 @@ except Exception, e:
 
 
 ####### DISPLAY RESULTS TABLE  #############################################################################################
+print '''<div class="insert_button"><input type="button" onClick="parent.location='address_insert.py?PlayerID={}'" value='InsertAddress'></div>'''.format(form.getvalue(keys[0]))
 print '<table class="gridtable" align="center">'
 
 # Print column headers    
 print '<tr>'
-print '<th>AddressID</th><th>StartDate</th><th>EndDate</th><th>Update</th><th>Delete</th>'
+print "<th>AddressID</th><th>StartDate</th><th>EndDate</th><th>Change</th><th>Update</th><th>Delete</th>"
 print '</tr>'
 
 # Print each row of table    
@@ -267,7 +268,8 @@ if rows != None:
         print '<td><input name="AddressID" id="AddressID" type="text" value ="{}" /></td>'.format(row[0])
         print '<td><input name="StartDate" id="StartDate" type="text" value ="{}" /></td>'.format(row[1])
         print '<td><input name="EndDate" id="EndDate" type="text" value ="{}" /></td>'.format(row[2])
-        print '<td><input type="submit" name="submit" value="UpdateAddress" /></td>'
+        print '<td><input type="submit" name="submit" value="Change" /></td>'
+        print '''<td><input type="button" onClick="parent.location='address_update.py?AddressID={}'" value='UpdateAddress'></td>'''.format(row[0])
         print '<td><input type="submit" name="submit" value="DeleteAddress" /></td>'
         print '</form>'
         print '</tr>'
