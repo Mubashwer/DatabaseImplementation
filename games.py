@@ -70,6 +70,7 @@ cursor = db.cursor()
 keys = ['GameID', 'Genre', 'Review', 'StarRating', 'ClassificationRating', 'PlatformNotes', 'PromotionLink', 'Cost', 'GameName']
 fields = dict.fromkeys(keys)
 row = None
+message = ""
 
 for key in fields:
     fields[key] = 'DEFAULT'        
@@ -77,7 +78,6 @@ for key in fields:
 for key in fields:
     if form.getvalue(key) != None:
         fields[key] = "'" + form.getvalue(key) + "'"
-        
         
 ######## If INSERT button is pressed then ... ###########################################################################
 if form.getvalue("submit") == "Insert":
@@ -93,9 +93,9 @@ if form.getvalue("submit") == "Insert":
     try:   
         cursor.execute(query)
         db.commit()
-        print '<div class = "success">Insert Successful!</div>'
+        message = '<div class = "success">Insert Successful!</div>'
     except Exception, e:
-        print '<div class = "error">Insert Error! {}.</div>'.format(repr(e)) 
+        message = '<div class = "error">Insert Error! {}.</div>'.format(repr(e)) 
 
 ######## If UPDATE button is pressed then ... ############################################################################
 if form.getvalue("submit") == "Update":        
@@ -108,9 +108,19 @@ if form.getvalue("submit") == "Update":
     try:   
         cursor.execute(query)
         db.commit()
-        print '<div class = "success">Update Successful!</div>'
+        message =  '<div class = "success">Update Successful!</div>'
     except Exception, e:
-        print '<div class = "error">Update Error! {}.</div>'.format(repr(e))  
+        message = '<div class = "error">Update Error! {}.</div>'.format(repr(e))  
+        
+######## If DELETE button is pressed then ... ###########################################################################        
+if form.getvalue("submit") == "Delete":
+    query = "DELETE FROM Game WHERE GameID = {};".format(fields[keys[0]])
+    try:   
+        cursor.execute(query)
+        db.commit()
+        message = '<div class = "success">Delete Successful!</div>'
+    except Exception, e:        
+        message = '<div class = "error">Delete Error! {}.</div>'.format(repr(e))        
         
 ######## LOAD RESULT ... ############################################################################
         
@@ -121,7 +131,7 @@ if fields['GameID'] != 'DEFAULT':
         cursor.execute(query)
         row = cursor.fetchone()
     except Exception, e:   
-        print '<div class = "error">Search Error! {}.</div>'.format(repr(e))
+        message = '<div class = "error">Search Error! {}.</div>'.format(repr(e))
 
 if row == None:
     row = ["", "", "", "", "", "", "", "", ""]
@@ -131,15 +141,6 @@ for i in range(9):
     if row[i] == None:
         row[i] = ""
         
-######## If DELETE button is pressed then ... ###########################################################################        
-if form.getvalue("submit") == "Delete":
-    query = "DELETE FROM Game WHERE GameID = {};".format(fields[keys[0]])
-    try:   
-        cursor.execute(query)
-        db.commit()
-        print '<div class = "success">Delete Successful!</div>'
-    except Exception, e:        
-        print '<div class = "error">Delete Error! {}.</div>'.format(repr(e))
 
 ####### PRINT FORM ##############################################################################
         
@@ -234,7 +235,8 @@ except Exception, e:
     print '<div class = "error">Search Error! {}.</div>'.format(repr(e))
     
 ####### DISPLAY RESULTS TABLE  #############################################################################################
-print '<table>'
+print message
+print '<table class="gridtable" align="center">'
 
 # Print column headers    
 print '<tr>'
@@ -255,8 +257,8 @@ print """
 </html>
 """
 
+        
 # Tidy up and free resources
 cursor.close()
 db.close()
 sess.close()                                                                                        
-
