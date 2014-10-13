@@ -38,12 +38,12 @@ db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29
 cursor = db.cursor()
 keys = ['PlayerID', 'SupervisorID', 'FirstName', 'LastName', 'Role', 'PlayerType', 'ProfileDescription', 'Email', 'UserName', 'HashedPassword', 'Salt', 'Phone', 'VoiP', 'AddressID', 'StartDate', 'EndDate']
 fields = dict.fromkeys(keys)
-
+message = "";
 
 if form.getvalue(keys[0]) == None:
-    query = "SELECT * FROM Player WHERE UserName = '{}';".format(userName)
+    querySearch = "SELECT * FROM Player WHERE UserName = '{}';".format(userName)
 else:
-    query = "SELECT * FROM Player WHERE PlayerID = '{}';".format(form.getvalue(keys[0])) 
+    querySearch = "SELECT * FROM Player WHERE PlayerID = '{}';".format(form.getvalue(keys[0])) 
 
 for key in fields:
     fields[key] = 'DEFAULT'          
@@ -52,10 +52,48 @@ for key in fields:
     if form.getvalue(key) != None:
         fields[key] = "'" + form.getvalue(key) + "'"
 
+######## If UPDATE button is pressed then ... ############################################################################
+ignore_password = 0;
+if form.getvalue("submit") == "Update":        
+    query = "UPDATE Player SET "
+    
+    fields['Salt'] = uuid.uuid4().hex
+    if (fields["HashedPassword"] == 'DEFAULT'):
+        ignore_password = 1;
+    else:
+        fields["HashedPassword"] = hashlib.sha512(form.getvalue('HashedPassword') + fields['Salt']).hexdigest()
+    
+    
+    fields['Salt'] = "'" + fields['Salt'] + "'"
+    fields['HashedPassword'] = "'" + fields['HashedPassword'] + "'"
+    
+    for key in keys[:-3]:
+        if(ignore_password == 1 and key == "HashedPassword"):
+            continue;
+        query += "{} = {}, ".format(key, fields[key])
+        
+    query = query[:-2] + " WHERE PlayerID = {};".format(fields[keys[0]])
+    
+    try:   
+        cursor.execute(query)
+        db.commit()
+        message =  '<div class = "success">Update Successful!</div>'
+    except Exception, e:
+        message =  '<div class = "error">Update Error! {}.</div>'.format(repr(e))
+        
+######## If DELETE button is pressed then ... ###########################################################################        
+if form.getvalue("submit") == "Delete":
+    query = "DELETE FROM Player WHERE PlayerID = {};".format(fields[keys[0]])
+    try:   
+        cursor.execute(query)
+        db.commit()
+        message =  '<div class = "success">Delete Successful!</div>'
+    except Exception, e:        
+        message =  '<div class = "error">Delete Error! {}.</div>'.format(repr(e)) 
         
 ####### GENERATE AND EXECUTE SEARCH QUERY ##########################################################################
 try:   
-    cursor.execute(query)
+    cursor.execute(querySearch)
     row = cursor.fetchone()
 except Exception, e:   
     print '<div class = "error">Search Error! {}.</div>'.format(repr(e))
@@ -67,7 +105,6 @@ row = list(row)
 for i in range(13):
     if row[i] == None:
         row[i] = ""
-        
 
 ####### PRINT FORM ##############################################################################
 print """
@@ -179,55 +216,15 @@ print """
 </div>
 """.format(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12]) 
 
-
-######## If UPDATE button is pressed then ... ############################################################################
-ignore_password = 0;
-if form.getvalue("submit") == "Update":        
-    query = "UPDATE Player SET "
-    
-    fields['Salt'] = uuid.uuid4().hex
-    if (fields["HashedPassword"] == 'DEFAULT'):
-        ignore_password = 1;
-    else:
-        fields["HashedPassword"] = hashlib.sha512(form.getvalue('HashedPassword') + fields['Salt']).hexdigest()
-    
-    
-    fields['Salt'] = "'" + fields['Salt'] + "'"
-    fields['HashedPassword'] = "'" + fields['HashedPassword'] + "'"
-    
-    for key in keys:
-        if(ignore_password == 1 and key == "HashedPassword"):
-            continue;
-        query += "{} = {}, ".format(key, fields[key])
-        
-    query = query[:-2] + " WHERE PlayerID = {};".format(fields[keys[0]])
-    
-    try:   
-        cursor.execute(query)
-        db.commit()
-        print '<div class = "success">Update Successful!</div>'
-    except Exception, e:
-        print '<div class = "error">Update Error! {}.</div>'.format(repr(e))
-        
-######## If DELETE button is pressed then ... ###########################################################################        
-if form.getvalue("submit") == "Delete":
-    query = "DELETE FROM Player WHERE PlayerID = {};".format(fields[keys[0]])
-    try:   
-        cursor.execute(query)
-        db.commit()
-        print '<div class = "success">Delete Successful!</div>'
-    except Exception, e:        
-        print '<div class = "error">Delete Error! {}.</div>'.format(repr(e))
-
 ######## If DELETE ADDRESS button is pressed then ... ###########################################################################        
 if form.getvalue("submit") == "Change":
     query = "UPDATE PlayerAddress SET AddressID = {0}, StartDate = {1}, EndDate = {2} WHERE PlayerID = {3};".format(fields[keys[-3]], fields[keys[-2]], fields[keys[-1]], fields[keys[0]])
     try:   
         cursor.execute(query)
         db.commit()
-        print '<div class = "success">Update Successful!</div>'
+        message = '<div class = "success">Update Successful!</div>'
     except Exception, e:        
-        print '<div class = "error">Update Error! {}.</div>'.format(repr(e))
+        message =  '<div class = "error">Update Error! {}.</div>'.format(repr(e))
         
 ######## If UPDATE ADDRESS button is pressed then ... ###########################################################################        
 if form.getvalue("submit") == "DeleteAddress":
@@ -235,9 +232,9 @@ if form.getvalue("submit") == "DeleteAddress":
     try:   
         cursor.execute(query)
         db.commit()
-        print '<div class = "success">Delete Successful!</div>'
+        message =  '<div class = "success">Delete Successful!</div>'
     except Exception, e:        
-        print '<div class = "error">Delete Error! {}.</div>'.format(repr(e))        
+        message = '<div class = "error">Delete Error! {}.</div>'.format(repr(e))        
 
 ####### GENERATE AND EXECUTE SEARCH QUERY FOR ADDRESS  ################################################################################
 
@@ -248,10 +245,11 @@ try:
     cursor.execute(query)
     rows = cursor.fetchall()
 except Exception, e:   
-    print '<div class = "error">Search Error! {}.</div>'.format(repr(e))
+    message = '<div class = "error">Search Error! {}.</div>'.format(repr(e))
 
-
+    
 ####### DISPLAY RESULTS TABLE  #############################################################################################
+print message
 print '''<div class="insert_button"><input type="button" onClick="parent.location='address_insert.py?PlayerID={}'" value='InsertAddress'></div>'''.format(form.getvalue(keys[0]))
 print '<table class="gridtable" align="center">'
 
