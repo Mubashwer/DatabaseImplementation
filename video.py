@@ -1,5 +1,5 @@
 # The libraries we'll need
-import sys, cgi, redirect, session, MySQLdb
+import sys, cgi, redirect, session, MySQLdb, common
 
 # Get the session and check if logged in
 sess = session.Session(expires=60*20, cookie_path='/')
@@ -84,45 +84,15 @@ Examples:
 To access the value in the UserName column of the fourth row (list index 3) returned by q1:
     all_rows[1][3]["UserName"]
 
-To get a list of all usernames, in the order returned by q1:
-    get_all(col_name = "UserName", query_index = 1)
-or just
-    get_all("UserName", 1)
-
-To get a unique, alphabetically sorted list of usernames, call uniq on the list returned above:
-    uniq(get_all("UserName", 1))
-
+To get a unique, alphabetically sorted list of usernames:
+    uniq([row["UserName"] for row in all_rows[1]])
 """
 # ---------------------------------------------------------------------------------------------------------------------
 # send session cookie
 print "%s\nContent-Type: text/html\n" % (sess.cookie)
 
-print """
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta name="keywords" content="" />
-<meta name="description" content="" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>WWAG: {}</title>
-<link href="css/video.css" rel="stylesheet" type="text/css" media="screen" />
-</head>
-<body>
-""".format(all_rows[0][0]["VideoName"])
-
-print """
-<div id="header">
-    <div id="navbar">
-    <ul>
-        <li><a href="login.py" style="text-decoration:none;color:#fff">Log In</a></li>
-        <li><a href="aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
-        
-        <li><a href="videos_search.py" style="text-decoration:none;color:#fff">Videos</a></li>
-        <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
-              
-    </ul>
-    </div>
-</div>
-"""
+print common.make_head(title = all_rows[0][0]["VideoName"], css_file = 'video.css')
+print common.make_navbar() 
 
 #Print Video info
 video_info = []
@@ -196,7 +166,6 @@ ir_html = wrap_div(ir_html, div_id = "instance_run_info")
 
 print(ir_html)
 
-print """
-</body>
-</html>
-"""​​​
+#That's all folks!
+
+print common.end_html()
