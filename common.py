@@ -1,9 +1,8 @@
-def make_head(title = 'WWAG', head_inject = ''):
-    """Constructs and returns the html header, taking as title and head_inject as inputs.
-    title will be the window title.  head_inject will be inserted directly after the 
+def make_head(title = 'WWAG', css_file = '', head_inject = ''):
+    """Constructs and returns the html header. head_inject will be inserted directly after the 
     opening <head> tag.  It could, for example, contain a <meta> tag used to implement
     a redirect.  The string returned also initialises the <html> and <body> branches.
-    All text following will be part of the body."""
+    All text following it's print-out will be part of the body."""
     
     return"""
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -13,10 +12,10 @@ def make_head(title = 'WWAG', head_inject = ''):
     <meta name="description" content="" />
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>{}</title>
-    <link href="css/video.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="css/{}" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
-    """.format(head_inject, title)
+    """.format(head_inject, css_file, title)
 
 def make_navbar():
     """Constructs and returns html string for the basic navbar used by most (all?) 
