@@ -36,6 +36,9 @@ def wrap_td(text):
 def wrap_table(text):
     return "<table>\n" + text + "\n</table>\n"
 
+def wrap_form(text, action = None):
+    return "<form name='form' action='{}' method='post'>\n<fieldset>\n".format(action) \
++ text + "\n</fieldset>\n</form>\n"
 
 db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29", "info20003g29", 3306)
 
@@ -63,6 +66,7 @@ NATURAL JOIN InstanceRun WHERE InstanceRunId = '{}'".format(instance_id)
 
 queries = [q1,q2,q3]
 #Corresponding to [ player, game, equipment]
+#(q0 has already been run)
 results = [res0]
 all_rows = [rows0]
 
@@ -120,10 +124,6 @@ print """
 </div>
 """
 
-
-#TODO: add order button, with possible access code input,
-#conditional on viewer type
-
 #Print Video info
 video_info = []
 
@@ -132,8 +132,19 @@ video_type = all_rows[0][0]["VideoType"]
 video_info.append("Type: " + video_type)
 video_info.append("Price: $" + str(all_rows[0][0]["Price"]))
 url = all_rows[0][0]["URL"]
+
 if (video_type in ["Non-Premium", "Free"]):
     video_info.append("Url: " + wrap_link(url, url))
+else:
+    order_html = wrap_div("<input type='submit' value='Order' />",div_id="order_button")
+    user_type = sess.data.get("userType")
+    if user_type not in ['P','B','S']:
+        order_html += 'Access code: <input type="text" name="access_code" />'
+    order_html = wrap_div(wrap_form(order_html, \
+                          action = 'order.py?video_id={}'.format(video_id)),\
+                          div_id="order_form")
+    if loggedIn and user_type != 'S':
+        print order_html
 
 video_html = ""
 for info in video_info:
@@ -149,28 +160,25 @@ player_html = wrap_tr(wrap_td("Participating Players:"))
 players = uniq([row["UserName"] for row in all_rows[1]])
 
 for player in players:
-#TODO wrap players in <a>s to link to player info page
-    player_html += wrap_tr(wrap_td(player))
+    player_html += wrap_tr(wrap_td(wrap_link(player, href = 'player_info.py?username=' + player)))
        
 player_html = wrap_div(wrap_table(player_html), 'player_info')
 
 print(player_html)
 
 #Print Game info
-#TODO add link  to game info page
 game_name = all_rows[2][0]["GameName"]
-print(wrap_div(wrap_p("Game: " + game_name)))
+game_id = all_rows[2][0]["GameID"]
+print(wrap_div(wrap_p("Game: " + wrap_link(game_name, href = 'game_info?game_id=' + str(game_id)))))
 
 #Print equipment info
-
 equipments = uniq([row["ModelAndMake"] for row in all_rows[3]])
 
-equipment_html = wrap_tr(wrap(td("Equipment Used:")))
+equipment_html = wrap_tr(wrap_td("Equipment Used:"))
 for equipment in equipments:
-    #TODO wrap equipments in <a>s to link to equipment info page
-    equipment_html += wrap_tr(wrap_td(equipment))
+    equipment_html += wrap_tr(wrap_td(wrap_link(equipment, href = 'equipment_info.py?mnm='+equipment)))
 equipment_html = wrap_div(wrap_table(equipment_html), div_id = 'equipment_info')
-print(equipment_html)
+print(equipment_html + str(all_rows[3]))
 
 #Print InstanceRun info
 
@@ -191,4 +199,4 @@ print(ir_html)
 print """
 </body>
 </html>
-"""
+"""​​​
