@@ -169,7 +169,7 @@ print(player_html)
 #Print Game info
 game_name = all_rows[2][0]["GameName"]
 game_id = all_rows[2][0]["GameID"]
-print(wrap_div(wrap_p("Game: " + wrap_link(game_name, href = 'game_info?game_id=' + str(game_id)))))
+print(wrap_div(wrap_p("Game: " + wrap_link(game_name, href = 'game_info.py?game_id=' + str(game_id)))))
 
 #Print equipment info
 equipments = uniq([row["ModelAndMake"] for row in all_rows[3]])
@@ -178,7 +178,7 @@ equipment_html = wrap_tr(wrap_td("Equipment Used:"))
 for equipment in equipments:
     equipment_html += wrap_tr(wrap_td(wrap_link(equipment, href = 'equipment_info.py?mnm='+equipment)))
 equipment_html = wrap_div(wrap_table(equipment_html), div_id = 'equipment_info')
-print(equipment_html + str(all_rows[3]))
+print(equipment_html)
 
 #Print InstanceRun info
 
