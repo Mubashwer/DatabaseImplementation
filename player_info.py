@@ -1,18 +1,19 @@
 # The libraries we'll need
 import sys, cgi, redirect, session, MySQLdb
+from common import *
 
 # Get the session and check if logged in
 sess = session.Session(expires=60*20, cookie_path='/')
 #loggedIn = sess.data.get('loggedIn')
 form = cgi.FieldStorage()
 db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29", "info20003g29", 3306)
+c=db.cursor()
 # ---------------------------------------------------------------------------------------------------------------------
 username = form.getvalue("username")
-query = "SELECT * FROM Player WHERE UserName='{}'".format(username)
+query = "SELECT * FROM Player WHERE UserName=%s"
 try:
-    db.query(query)
-    res = db.store_result()
-    rows = res.fetch_row(maxrows = 0, how = 1)
+    c.execute(query,(username,))
+    rows = results_as_dicts(c)
     assert(len(rows) == 1)
     info = rows[0]
     query_success = True
@@ -46,51 +47,30 @@ else:
         </tr>
         <tr id='email'>
             <td>Email:</td>
-            <td>{}</td>
+            <td><a href='mailto:{}>
+                {}
+                </a>
+            </td>
         </tr>
         <tr id='description'>
             <td colspan='2'>{}</td>
         </tr>
      </table>
-     """.format(info["FirstName"]+' '+info["LastName"], info["UserName"], info["Role"], info["Email"], info["ProfileDescription"])
-     #"".format(firstname+lastname,gamerhandle,role,email,profiledescription) 
+     """.format(info["FirstName"]+' '+info["LastName"], info["UserName"], info["Role"],\
+                info["Email"], info["Email"], info["ProfileDescription"])
+    
 # send session cookie
 print "%s\nContent-Type: text/html\n" % (sess.cookie)
 
 if not username:
     username = "None"
 
-print """
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta name="keywords" content="" />
-<meta name="description" content="" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>WWAG Player: {}</title>
-<link href="css/player_info.css" rel="stylesheet" type="text/css" media="screen" />
-</head>
-<body>
-""".format(username)
+print make_head(title = "WWAG Player: "+username, css_file = "player_info.css")
+print make_navbar()
 
-print """
-<div id="header">
-    <div id="navbar">
-    <ul>
-        <li><a href="login.py" style="text-decoration:none;color:#fff">Log In</a></li>
-        <li><a href="aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
-        
-        <li><a href="videos_search.py" style="text-decoration:none;color:#fff">Videos</a></li>
-        <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
-              
-    </ul>
-    </div>
-</div>
-"""
 if query_success:
     print body
 else:
     print message
-print """
-</body>
-</html>
- """    
+
+print end_html
