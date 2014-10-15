@@ -1,5 +1,6 @@
 # The libraries we'll need
-import sys, cgi, redirect, session, MySQLdb, common
+import sys, cgi, redirect, session, MySQLdb
+from common import *
 
 # Get the session and check if logged in
 sess = session.Session(expires=60*20, cookie_path='/')
@@ -7,40 +8,8 @@ loggedIn = sess.data.get('loggedIn')
 form = cgi.FieldStorage()
 # ---------------------------------------------------------------------------------------------------------------------
 
-### HELPERS ###
-def rows_from_res(res):
-    return res.fetch_row(maxrows = 0, how = 1)
-    #Get all rows, with each row as a dictionary with column names as keys and values as values
-    
-def uniq(l):
-    return sorted(list(set(l)))#Cast to set, then back to remove dups
-
-def wrap_p(text, p_id=None):
-    if p_id:
-        return "<p id='{}'>".format(p_id) + text + "</p>\n"
-    else:
-        return "<p>" + text + "</p>\n"
-
-def wrap_div(text, div_id=None):
-    return "<div id='{}'>".format(div_id) + text + "</div>"
-
-def wrap_link(text, href=None):
-    return "<a href='{}'>".format(href) + text + "</a>"
-
-def wrap_tr(text):
-    return "<tr>" + text + "</tr>\n"
-
-def wrap_td(text):
-    return "<td>" + text + "</td>"
-
-def wrap_table(text):
-    return "<table>\n" + text + "\n</table>\n"
-
-def wrap_form(text, action = None):
-    return "<form name='form' action='{}' method='post'>\n<fieldset>\n".format(action) \
-+ text + "\n</fieldset>\n</form>\n"
-
 db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29", "info20003g29", 3306)
+c = db.cursor()
 
 video_id = form.getvalue("video_id")
 #If video_id is not set: redirect to videos_search
@@ -48,33 +17,35 @@ if not video_id:
     print "Status: 307 Temporary Redirect"
     print "Location: videos_search.py" 
 
-q0 = "SELECT * FROM Video NATURAL JOIN InstanceRun WHERE VideoID = '{}'".format(video_id)
-db.query(q0)
-res0 = db.store_result()
-rows0 = rows_from_res(res0)
-instance_id = rows0[0]["InstanceRunID"]
+# Each query is pieced together out of a template and some substitutions
+templates = []
+subs = []
 
-q1 = "select * from Player inner join InstanceRun inner join InstancePlayer \
+templates.append("SELECT * FROM Video NATURAL JOIN InstanceRun WHERE VideoID = %s")
+subs.append((video_id,))
+c.execute(templates[0], subs[0])
+all_rows = [results_as_dicts(c)] # With more lists of rows to come
+instance_id = all_rows[0][0]["InstanceRunID"]
+
+templates.append("select * from Player inner join InstanceRun inner join InstancePlayer \
 on InstanceRun.InstanceRunID = InstancePlayer.InstanceRunID \
 AND Player.PlayerID = InstancePlayer.PlayerID \
-where InstanceRun.InstanceRunID = {}".format(instance_id)
+where InstanceRun.InstanceRunID = %s")
+subs.append((instance_id,))
 
-q2 = "SELECT * FROM Video NATURAL JOIN Game WHERE VideoID = '{}'".format(video_id)
+templates.append("SELECT * FROM Video NATURAL JOIN Game WHERE VideoID = %s")
+subs.append((video_id,))
 
-q3 = "SELECT * FROM Equipment NATURAL JOIN InstanceEquipment \
-NATURAL JOIN InstanceRun WHERE InstanceRunId = '{}'".format(instance_id)
+templates.append("SELECT * FROM Equipment NATURAL JOIN InstanceEquipment \
+NATURAL JOIN InstanceRun WHERE InstanceRunId = %s")
+subs.append((instance_id,))
 
-queries = [q1,q2,q3]
-#Corresponding to [ player, game, equipment]
+queries = [{'template':templates[i], 'subs':subs[i]} for i in range(4)]
+
 #(q0 has already been run)
-results = [res0]
-all_rows = [rows0]
-
-for query in queries:
-    db.query(query)
-    result = db.store_result()
-    results.append(result)
-    all_rows.append(rows_from_res(result))  
+for query in queries[1:]:
+    c.execute(query['template'], query['subs'])
+    all_rows.append(results_as_dicts(c))  
 
 """
 Data returned by any query in list queries can now be accessed using it's index (e.g. 1 for q1)
@@ -84,15 +55,20 @@ Examples:
 To access the value in the UserName column of the fourth row (list index 3) returned by q1:
     all_rows[1][3]["UserName"]
 
-To get a unique, alphabetically sorted list of usernames:
-    uniq([row["UserName"] for row in all_rows[1]])
+To get a list of all usernames, in the order returned by q1:
+    get_all(col_name = "UserName", query_index = 1)
+or just
+    get_all("UserName", 1)
+
+To get a unique, alphabetically sorted list of usernames, call uniq on the list returned above:
+    uniq(get_all("UserName", 1))
+
 """
 # ---------------------------------------------------------------------------------------------------------------------
-# send session cookie
+# send session cookie and put in the basic html
 print "%s\nContent-Type: text/html\n" % (sess.cookie)
-
-print common.make_head(title = all_rows[0][0]["VideoName"], css_file = 'video.css')
-print common.make_navbar() 
+print make_head(title = 'WWAG: ' + all_rows[0][0]["VideoName"])
+print make_navbar()
 
 #Print Video info
 video_info = []
@@ -104,7 +80,7 @@ video_info.append("Price: $" + str(all_rows[0][0]["Price"]))
 url = all_rows[0][0]["URL"]
 
 if (video_type in ["Non-Premium", "Free"]):
-    video_info.append("Url: " + wrap_link(url, url))
+    video_info.append("Url: " + wrap_link(url, href = url))
 else:
     order_html = wrap_div("<input type='submit' value='Order' />",div_id="order_button")
     user_type = sess.data.get("userType")
@@ -166,6 +142,5 @@ ir_html = wrap_div(ir_html, div_id = "instance_run_info")
 
 print(ir_html)
 
-#That's all folks!
-
-print common.end_html()
+print end_html
+​
