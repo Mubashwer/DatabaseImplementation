@@ -52,7 +52,7 @@ else:
             <td colspan='2'>{}</td>
         </tr>
      </table>
-     """.format(info["FirstName"]+info["LastName"], info["UserName"], info["Role"], info["Email"], info["ProfileDescription"])
+     """.format(info["FirstName"]+' '+info["LastName"], info["UserName"], info["Role"], info["Email"], info["ProfileDescription"])
      #"".format(firstname+lastname,gamerhandle,role,email,profiledescription) 
 # send session cookie
 print "%s\nContent-Type: text/html\n" % (sess.cookie)
