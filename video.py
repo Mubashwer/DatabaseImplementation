@@ -6,7 +6,6 @@ from common import *
 sess = session.Session(expires=60*20, cookie_path='/')
 loggedIn = sess.data.get('loggedIn')
 form = cgi.FieldStorage()
-# ---------------------------------------------------------------------------------------------------------------------
 
 db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29", "info20003g29", 3306)
 c = db.cursor()
@@ -64,10 +63,10 @@ To get a unique, alphabetically sorted list of usernames, call uniq on the list 
     uniq(get_all("UserName", 1))
 
 """
-# ---------------------------------------------------------------------------------------------------------------------
+
 # send session cookie and put in the basic html
 print "%s\nContent-Type: text/html\n" % (sess.cookie)
-print make_head(title = 'WWAG: ' + all_rows[0][0]["VideoName"])
+print make_head(title = 'WWAG: ' + all_rows[0][0]["VideoName"], css_file = 'video.py')
 print make_navbar()
 
 #Print Video info
@@ -143,4 +142,3 @@ ir_html = wrap_div(ir_html, div_id = "instance_run_info")
 print(ir_html)
 
 print end_html
-​
