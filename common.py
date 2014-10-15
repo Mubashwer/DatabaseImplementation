@@ -1,8 +1,9 @@
-def make_head(title = 'WWAG', css_file = '', head_inject = ''):
-    """Constructs and returns the html header. head_inject will be inserted directly after the 
+def make_head(title = 'WWAG', head_inject = ''):
+    """Constructs and returns the html header, taking as title and head_inject as inputs.
+    title will be the window title.  head_inject will be inserted directly after the 
     opening <head> tag.  It could, for example, contain a <meta> tag used to implement
     a redirect.  The string returned also initialises the <html> and <body> branches.
-    All text following it's print-out will be part of the body."""
+    All text following will be part of the body."""
     
     return"""
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -12,10 +13,10 @@ def make_head(title = 'WWAG', css_file = '', head_inject = ''):
     <meta name="description" content="" />
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>{}</title>
-    <link href="css/{}" rel="stylesheet" type="text/css" media="screen" />
+    <link href="css/video.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
-    """.format(head_inject, css_file, title)
+    """.format(head_inject, title)
 
 def make_navbar():
     """Constructs and returns html string for the basic navbar used by most (all?) 
@@ -34,10 +35,45 @@ def make_navbar():
     </div>
     """
 
-def end_html():
-    """Generates string of closing </body> and </html> tags to finish an html document."""
-    
-    return """
+end_html = """
 </body>
 </html>
     """
+def results_as_dicts(cursor):
+    """
+    Takes a MySQLdb cursor object and returns a list of dictionaries, each representing a row
+    returned by the most recent query, with attribute names as keys and values as values
+    """
+    headings = [tup[0] for tup in cursor.description]
+    rows = cursor.fetchall()
+    dict_rows = [dict(zip(headings, row)) for row in rows]
+    return dict_rows​​
+    
+def uniq(l):
+    return sorted(list(set(l)))#Cast to set, then back to remove dups
+
+def wrap_p(text, p_id=None):
+    if p_id:
+        return "<p id='{}'>".format(p_id) + text + "</p>\n"
+    else:
+        return "<p>" + text + "</p>\n"
+
+def wrap_div(text, div_id=None):
+    return "<div id='{}'>".format(div_id) + text + "</div>"
+
+def wrap_link(text, href=None):
+    return "<a href='{}'>".format(href) + text + "</a>"
+
+def wrap_tr(text):
+    return "<tr>" + text + "</tr>\n"
+
+def wrap_td(text):
+    return "<td>" + text + "</td>"
+
+def wrap_table(text):
+    return "<table>\n" + text + "\n</table>\n"
+
+def wrap_form(text, action = None):
+    return "<form name='form' action='{}' method='post'>\n<fieldset>\n".format(action) \
++ text + "\n</fieldset>\n</form>\n"
+​
