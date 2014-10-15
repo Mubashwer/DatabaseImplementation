@@ -17,7 +17,7 @@ data["OrderDate"] = time.strftime("%Y-%m-%d")
 data["ViewedStatus"] = False
 
 username = sess.data.get("userName")
-sess.data.get("loggedIn")
+logged_in = sess.data.get("loggedIn")
 user_type = sess.data.get("userType")
                               
 if not logged_in or user_type in ['S']:
@@ -127,3 +127,4 @@ print """
 </body>
 </html>
 """
+​
