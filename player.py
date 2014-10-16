@@ -41,6 +41,7 @@ db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29
 table = 'Player'
 cursor = db.cursor()
 keys = ['PlayerID', 'SupervisorID', 'FirstName', 'LastName', 'Role', 'PlayerType', 'ProfileDescription', 'Email', 'UserName', 'HashedPassword', 'Salt', 'Phone', 'VoiP']
+ignore_form = ['SupervisorID', 'FirstName', 'LastName', 'Role', 'PlayerType', 'ProfileDescription', 'Email', 'UserName', 'HashedPassword', 'Salt', 'Phone', 'VoiP']
 exact_keys = ['PlayerID', 'SupervisorID']
 ignore = ['HashedPassword', 'Salt']
 pk = ['PlayerID']
@@ -71,7 +72,7 @@ if form.getvalue("submit") == "Delete":
     message =  sql.delete(db, cursor, table, fields, pk)
         
 ####### GENERATE AND EXECUTE SEARCH QUERY ##########################################################################
-result =  sql.search(db, cursor, table, fields, keys, exact_keys, ignore=ignore, limit=10, fetch_one=True)
+result =  sql.search(db, cursor, table, fields, keys, exact_keys, ignore=ignore_form, limit=10, fetch_one=True)
 row = result[0];
 
 if row == None:
