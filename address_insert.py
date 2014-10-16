@@ -1,5 +1,5 @@
 # The libraries we'll need
-import sys, cgi, redirect, session, MySQLdb, warnings
+import sys, cgi, redirect, session, MySQLdb, warnings, sql, html
 
 warnings.filterwarnings('error', category=MySQLdb.Warning)
 # Get the session and check if logged in
@@ -14,7 +14,6 @@ print "%s\nContent-Type: text/html\n" % (sess.cookie)
 form = cgi.FieldStorage()
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Only logged in users who are players can access this page
 
 redirect_now = False
 if form.getvalue('PlayerID') != None:
@@ -26,53 +25,19 @@ elif form.getvalue('ViewerID') != None:
 else:
     redirect_now = True
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Only logged in users who are players can access this page
 if (not loggedIn or not userType == 'S') or (redirect_now == True):
     # redirect to home page
-    print """\
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta http-equiv="refresh" content="0;url=%s">
-    </head>
-    <body>
-    </body>
-    """ % redirect.getQualifiedURL("/~mskh/dbsys/dbs2014sm2group29/home.py")
+    print html.do_redirect("home.py")
     sess.close()   
     sys.exit(0)
 
 # ---------------------------------------------------------------------------------------------------------------------
+    
+print html.make_head("video_modify.css", title="WWAG Address")
 
-print """
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta name="keywords" content="" />
-<meta name="description" content="" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>WWAG Address</title>
-<link href="css/video_modify.css" rel="stylesheet" type="text/css" media="screen" />
-</head>
-<body>
-"""
-
-print """
-<div id="header">
-            <div id="navbar">
-                <ul>
-            <li><a href="do_logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
-            <li><a href="aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
-            <li><a href="players.py" style="text-decoration:none;color:#fff">Players</a></li>
-            <li><a href="games.py" style="text-decoration:none;color:#fff">Games</a></li>
-            <li><a href="instance_runs.py" style="text-decoration:none;color:#fff">Instance Runs</a></li>
-            <li><a href="achievements.py" style="text-decoration:none;color:#fff">Achievements</a></li>
-            <li><a href="viewers.py" style="text-decoration:none;color:#fff">Viewers</a></li>
-            <li><a href="videos_modify.py" style="text-decoration:none;color:#fff">Videos</a></li>
-            <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
-                </ul>
-            </div>
-            
-  </div>
-"""
+print html.make_navbar(loggedIn, userType)
 # ---------------------------------------------------------------------------------------------------------------------
 ####### CONNECT TO DATABASE ##########################################################################
 
@@ -81,15 +46,11 @@ cursor = db.cursor()
 keys = ['AddressID', 'StreetNumber', 'StreetNumberSuffix', 'StreetName', 'StreetType', 'AddressType', 'AddressTypeIdentifier', 'MinorMunicipality', 'MajorMunicipality', 'GoverningDistrict', 'PostalArea', 'Country']
 keys_a = ['{}ID'.format(table), 'AddressID', 'StartDate', 'EndDate']
 
-fields = dict.fromkeys(keys + ['{}ID'.format(table), 'StartDate', 'EndDate'])
+fields = dict.fromkeys(keys + keys_a)
 
 for key in fields:
-    fields[key] = 'DEFAULT'          
+    fields[key] = form.getvalue(key)
 
-for key in fields:
-    if form.getvalue(key) != None:
-        fields[key] = "'" + form.getvalue(key) + "'"
-   
           
 ####### PRINT FORM ##############################################################################
 
@@ -185,35 +146,29 @@ print """
 </div>
 """.format(table, id)
 
-​
+
 ######## If INSERT button is pressed then ... ###########################################################################
 if form.getvalue("submit") == "Insert":
 
-    #insert query is generated and there is an attempt to execute the query
-    query = '''INSERT INTO Address VALUES ('''
-    for key in keys:
-        query += "{}, ".format(fields[key])
-    query = query[:-2] + ");"
-
-    try:   
-        cursor.execute(query)
-        db.commit()
-    except Exception, e:
-        print '<div class = "error">Insert Error! {}.</div>'.format(repr(e))
-        sys.exit(0)
-        
-    if fields[keys[0]] == 'DEFAULT':
-        fields[keys[0]] = 'LAST_INSERT_ID()'
-        
-    query = '''INSERT INTO {}Address VALUES ('''.format(table)
+    print sql.insert(db, cursor, "Address", fields, keys)
+    
+    query = '''INSERT INTO {}Address VALUES ('''.format(table)  
+    args = ()
     for key in keys_a:
-        query += "{}, ".format(fields[key])
+        if key == 'AddressID' and fields[key] == None:
+            query += 'LAST_INSERT_ID(), ' 
+        elif fields[key] == None:
+            query += "DEFAULT, "
+        else:        
+            query += "%s, ".format(fields[key])
+            args += (fields[key], )
     query = query[:-2] + ");"
-
+    
     try:       
-        cursor.execute(query)
+        cursor.execute(query, args)
         db.commit()
         print '<div class = "success">Insert Successful!</div>'
     except Exception, e:
         db.rollback()
-        print '<div class = "error">Insert Error! {}.</div>'.format(repr(e))  ​​​
+        print '<div class = "error">Insert Error! {}.</div>'.format(repr(e))
+        
