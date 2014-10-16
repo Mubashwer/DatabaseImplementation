@@ -156,10 +156,11 @@ if form.getvalue("submit") == "Insert":
     else:
         print '<div class = "error">Insert Error! Password is empty.</div>'
         sys.exit(0);
-        print html.end_html
-          
+        print html.end_html      
     print sql.insert(db, cursor, table, fields, keys)
-              
+    if(fields['ViewerID'] == None):
+        fields['ViewerID'] = cursor.lastrowid        
+    
     if fields['ViewerType'] == 'B' or fields['ViewerType'] == 'C':
           print sql.insert(db, cursor, 'CrowdFundingViewer', fields, keys_c)
     if fields['ViewerType'] == 'B' or fields['ViewerType'] == 'P':
@@ -169,6 +170,7 @@ if form.getvalue("submit") == "Insert":
 ####### GENERATE AND EXECUTE SEARCH QUERY  ################################################################################
 
 result =  sql.search(db, cursor, table, fields, keys, exact_keys, select=["ViewerID", "UserName"], ignore=ignore, limit=10)
+
 rows = result[0];
 print result[1]; 
     
