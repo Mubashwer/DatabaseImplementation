@@ -1,5 +1,6 @@
 # The libraries we'll need
-import sys, cgi, redirect, session, MySQLdb, warnings
+import sys, cgi, redirect, session, MySQLdb, warnings, sql, html
+from xml.sax.saxutils import *
 
 warnings.filterwarnings('error', category=MySQLdb.Warning)
 # Get the session and check if logged in
@@ -12,144 +13,77 @@ print "%s\nContent-Type: text/html\n" % (sess.cookie)
 
 # get form data
 form = cgi.FieldStorage()
-
+# additional entity to replace in escape function
+entities = {'"': '&quot;'} 
 # ---------------------------------------------------------------------------------------------------------------------
 # Only logged in users who are players can access this page
 if (not loggedIn or not userType == 'S'):
     # redirect to home page
-    print """\
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta http-equiv="refresh" content="0;url=%s">
-    </head>
-    <body>
-    </body>
-    """ % redirect.getQualifiedURL("/~mskh/dbsys/dbs2014sm2group29/home.py")
+    print html.do_redirect("home.py")
     sess.close()   
     sys.exit(0)
 
 # ---------------------------------------------------------------------------------------------------------------------
+    
+print html.make_head("video_modify.css", title="WWAG Achievements")
 
-print """
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta name="keywords" content="" />
-<meta name="description" content="" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>WWAG Players</title>
-<link href="css/video_modify.css" rel="stylesheet" type="text/css" media="screen" />
-</head>
-<body>
-"""
+print html.make_navbar(loggedIn, userType)
 
-print """
-<div id="header">
-            <div id="navbar">
-                <ul>
-            <li><a href="do_logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
-            <li><a href="aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
-            <li><a href="players.py" style="text-decoration:none;color:#fff">Players</a></li>
-            <li><a href="games.py" style="text-decoration:none;color:#fff">Games</a></li>
-            <li><a href="instance_runs.py" style="text-decoration:none;color:#fff">Instance Runs</a></li>
-            <li><a href="achievements.py" style="text-decoration:none;color:#fff">Achievements</a></li>
-            <li><a href="viewers.py" style="text-decoration:none;color:#fff">Viewers</a></li>
-            <li><a href="videos_modify.py" style="text-decoration:none;color:#fff">Videos</a></li>
-            <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
-                </ul>
-            </div>
-            
-  </div>
-"""
- 
 ####### LOAD FORM DATA ##########################################################################
 
 db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29", "info20003g29", 3306)
 cursor = db.cursor()
+table = "Game"
 keys = ['GameID', 'Genre', 'Review', 'StarRating', 'ClassificationRating', 'PlatformNotes', 'PromotionLink', 'Cost', 'GameName']
+exact_keys = ['GameID', 'StarRating', 'Cost']
+pk = ['GameID']
+
 fields = dict.fromkeys(keys)
 row = None
 message = ""
 
 for key in fields:
-    fields[key] = 'DEFAULT'        
-
-for key in fields:
     if form.getvalue(key) != None:
-        fields[key] = "'" + form.getvalue(key) + "'"
+        fields[key] = unescape(form.getvalue(key)) 
+    else:
+        fields[key] = None;       
+
         
 ######## If INSERT button is pressed then ... ###########################################################################
-if form.getvalue("submit") == "Insert":
+if form.getvalue("submit") == "Insert":    
+    message =  sql.insert(db, cursor, table, fields, keys)
 
-    #insert query is generated and there is an attempt to execute the query
-    query = '''INSERT INTO Game VALUES ('''
-    
-    for key in keys:
-        query += "{}, ".format(fields[key])
-    
-    query = query[:-2] + ");"
-
-    try:   
-        cursor.execute(query)
-        db.commit()
-        message = '<div class = "success">Insert Successful!</div>'
-    except Exception, e:
-        message = '<div class = "error">Insert Error! {}.</div>'.format(repr(e)) 
-
-######## If UPDATE button is pressed then ... ############################################################################
-if form.getvalue("submit") == "Update":        
-    query = "UPDATE Game SET "
-    for key in keys:
-        query += "{} = {}, ".format(key, fields[key])
-        
-    query = query[:-2] + " WHERE GameID = {};".format(fields[keys[0]])
-    
-    try:   
-        cursor.execute(query)
-        db.commit()
-        message =  '<div class = "success">Update Successful!</div>'
-    except Exception, e:
-        message = '<div class = "error">Update Error! {}.</div>'.format(repr(e))  
-        
 ######## If DELETE button is pressed then ... ###########################################################################        
 if form.getvalue("submit") == "Delete":
-    query = "DELETE FROM Game WHERE GameID = {};".format(fields[keys[0]])
-    try:   
-        cursor.execute(query)
-        db.commit()
-        message = '<div class = "success">Delete Successful!</div>'
-    except Exception, e:        
-        message = '<div class = "error">Delete Error! {}.</div>'.format(repr(e))        
+    message =  sql.delete(db, cursor, table, fields, pk)
+        
+######## If UPDATE button is pressed then ... ############################################################################
+if form.getvalue("submit") == "Update":        
+    message =  sql.update(db, cursor, table, fields, keys, pk)        
         
 ######## LOAD RESULT ... ############################################################################
         
-if fields['GameID'] != 'DEFAULT':
-    
-    query = "SELECT * FROM Game WHERE GameID = {}".format(fields['GameID'])    
-    try:   
-        cursor.execute(query)
-        row = cursor.fetchone()
-    except Exception, e:   
-        message = '<div class = "error">Search Error! {}.</div>'.format(repr(e))
+result =  sql.search(db, cursor, table, fields, keys, exact_keys, limit=10, fetch_one=True)
+row = result[0];
 
 if row == None:
-    row = ["", "", "", "", "", "", "", "", ""]
+    row = ["", "", "", "", "", "",  "", "", ""]
 
 row = list(row)
 for i in range(9):
     if row[i] == None:
         row[i] = ""
-        
+    else:
+        row[i] = escape(str(row[i]), entities)   
 
 ####### PRINT FORM ##############################################################################
         
 print """
 <div class="search_form">
 <h2 class="header">GAMES</h2>
-<form action="games.py" method="post">
+<form name="myForm" id="myForm" action="games.py"  method="post">
     <fieldset id="search">
-        <legend>Maintain Games</legend>
+        <legend>Maintain Game</legend>
         
         <div class="textbox">
             <label for="GameID">Game ID:</label>
@@ -157,7 +91,7 @@ print """
         </div>
 
         <div class="textbox">
-            <label for="GameName">Game Name:</label>
+            <label for="GameName">Game Name*:</label>
             <input name="GameName" id="GameName" type="text" value = "{8}" />
         </div>
         
@@ -199,8 +133,8 @@ print """
     
     <div id="buttons" class="button_select">
         <input type="reset" value="Reset" />
-        <input type="submit" name="submit" value="Insert" />
-        <input type="submit" name="submit" value="Search" />
+        <input type="submit" name="submit" value="Insert"/>
+        <input type="submit" name="submit" value="Search" onclick="DoSubmit()"/>
         <input type="submit" name="submit" value="Update" />
         <input type="submit" name="submit" value="Delete" />
     </div>
@@ -211,28 +145,10 @@ print """
 
 ####### GENERATE AND EXECUTE SEARCH QUERY  ################################################################################
 
-query = "SELECT GameID, GameName FROM Game LIMIT 10;"
-condition = "WHERE "
-has_condition = False
-                                                                                         
-for key in fields:
-    if fields[key] != 'DEFAULT':
-        if key in ['GameID', 'StarRating', 'Cost']:
-            condition += "{} = {} AND ".format(key, fields[key])         
-        else:
-            condition += "{} LIKE '%{}%' AND ".format(key, form.getvalue(key))                                                                                          
-        has_condition = True
-                                                                                          
-                                                                                         
-if has_condition:
-    query = query[:-9] + condition[:-4] + "LIMIT 10;"                                                                                                                                                                              
+result =  sql.search(db, cursor, table, fields, keys, exact_keys, select=["GameID", "GameName"], limit=10)
+rows = result[0];
+print result[1];    
 
-rows = None    
-try:   
-    cursor.execute(query)
-    rows = cursor.fetchall()
-except Exception, e:   
-    print '<div class = "error">Search Error! {}.</div>'.format(repr(e))
     
 ####### DISPLAY RESULTS TABLE  #############################################################################################
 print message
@@ -252,12 +168,8 @@ if rows != None:
                                                                                              
 print '</table>'    
                                                                                          
-print """
-</body>
-</html>
-"""
+print html.end_html
 
-        
 # Tidy up and free resources
 cursor.close()
 db.close()
