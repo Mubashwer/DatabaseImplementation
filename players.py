@@ -1,5 +1,6 @@
 # The libraries we'll need
-import sys, cgi, redirect, session, MySQLdb, warnings, hashlib, uuid
+import sys, cgi, session, MySQLdb, warnings, hashlib, uuid, sql, html
+from xml.sax.saxutils import *
 
 warnings.filterwarnings('error', category=MySQLdb.Warning)
 # Get the session and check if logged in
@@ -12,63 +13,29 @@ print "%s\nContent-Type: text/html\n" % (sess.cookie)
 
 # get form data
 form = cgi.FieldStorage()
+# additional entity to replace in escape function
+entities = {'"': '&quot;'} 
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Only logged in users who are players can access this page
-if(not loggedIn or not userType == 'S'):
+if (not loggedIn or not userType == 'S'):
     # redirect to home page
-    print """\
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta http-equiv="refresh" content="0;url=%s">
-    </head>
-    <body>
-    </body>
-    """ % redirect.getQualifiedURL("/~mskh/dbsys/dbs2014sm2group29/home.py")
+    print html.do_redirect("home.py")
     sess.close()   
     sys.exit(0)
-
 # ---------------------------------------------------------------------------------------------------------------------
     
-print """
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta name="keywords" content="" />
-<meta name="description" content="" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>WWAG Players</title>
-<link href="css/video_modify.css" rel="stylesheet" type="text/css" media="screen" />
-</head>
-<body>
-"""
+print html.make_head("video_modify.css", title="WWAG Player")
 
-print """
-<div id="header">
-            <div id="navbar">
-                <ul>
-            <li><a href="do_logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
-            <li><a href="aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
-            <li><a href="players.py" style="text-decoration:none;color:#fff">Players</a></li>
-            <li><a href="games.py" style="text-decoration:none;color:#fff">Games</a></li>
-            <li><a href="instance_runs.py" style="text-decoration:none;color:#fff">Instance Runs</a></li>
-            <li><a href="achievements.py" style="text-decoration:none;color:#fff">Achievements</a></li>
-            <li><a href="viewers.py" style="text-decoration:none;color:#fff">Viewers</a></li>
-            <li><a href="videos_modify.py" style="text-decoration:none;color:#fff">Videos</a></li>
-            <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
-                </ul>
-            </div>
-            
-  </div>
-"""
+print html.make_navbar(loggedIn, userType)
+
 
 print """
 <div class="search_form">
 <h2 class="header">PLAYERS</h2>
-<form action="players.py" method="post">
+<form id="myForm" action="players.py" method="post">
     <fieldset id="search">
-        <legend>Search Player</legend>
+        <legend>Maintain Player</legend>
         
         <div class="textbox">
             <label for="PlayerID">Player ID:</label>
@@ -134,7 +101,7 @@ print """
     <div id="buttons" class="button_select">
         <input type="reset" value="Reset" />
         <input type="submit" name="submit" value="Insert" />
-        <input type="submit" name="submit" value="Search" />
+        <input type="submit" name="submit" value="Search" onClick="DoSubmit()" />
     </div>
 </form>
 </div>
@@ -144,70 +111,38 @@ print """
 
 db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29", "info20003g29", 3306)
 cursor = db.cursor()
+table = "Player"
 keys = ['PlayerID', 'SupervisorID', 'FirstName', 'LastName', 'Role', 'PlayerType', 'ProfileDescription', 'Email', 'UserName', 'HashedPassword', 'Salt', 'Phone', 'VoiP']
+exact_keys = ['PlayerID', 'SupervisorID']
+ignore = ['HashedPassword', 'Salt']
+
 fields = dict.fromkeys(keys)
 
 for key in fields:
-    fields[key] = 'DEFAULT'        
-
-for key in fields:
     if form.getvalue(key) != None:
-        fields[key] = "'" + form.getvalue(key) + "'"        
+        fields[key] = unescape(form.getvalue(key)) 
+    else:
+        fields[key] = None;       
 
 ######## If INSERT button is pressed then ... ###########################################################################
 if form.getvalue("submit") == "Insert":
-
-    #insert query is generated and there is an attempt to execute the query
-    query = '''INSERT INTO Player VALUES ('''
     
     fields['Salt'] = uuid.uuid4().hex
-    if fields["HashedPassword"] != 'DEFAULT':
-        fields["HashedPassword"] = hashlib.sha512(form.getvalue('HashedPassword') + fields['Salt']).hexdigest()
+    if fields["HashedPassword"] != None:
+        fields["HashedPassword"] = hashlib.sha512(fields['HashedPassword'] + fields['Salt']).hexdigest()
     else:
         print '<div class = "error">Insert Error! Password is empty.</div>'
         sys.exit(0);
+        print html.end_html
+          
+    print sql.insert(db, cursor, table, fields, keys)
     
-    fields['Salt'] = "'" + fields['Salt'] + "'"
-    fields['HashedPassword'] = "'" + fields['HashedPassword'] + "'"
-    
-    for key in keys:
-        query += "{}, ".format(fields[key])
-    
-    query = query[:-2] + ");"
-
-    try:   
-        cursor.execute(query)
-        db.commit()
-        print '<div class = "success">Insert Successful!</div>'
-    except Exception, e:
-        print '<div class = "error">Insert Error! {}.</div>'.format(repr(e)) 
 
 ####### GENERATE AND EXECUTE SEARCH QUERY  ################################################################################
 
-query = "SELECT PlayerID, UserName FROM Player LIMIT 10;"
-condition = "WHERE "
-has_condition = False
-                                                                                         
-for key in fields:
-    if fields[key] != 'DEFAULT':
-        if key in ['PlayerID', 'SupervisorID']:
-            condition += "{} = {} AND ".format(key, fields[key])
-        elif key in ['HashedPassword', 'Salt']:
-            continue         
-        else:
-            condition += "{} LIKE '%{}%' AND ".format(key, form.getvalue(key))                                                                                          
-        has_condition = True
-                                                                                          
-                                                                                         
-if has_condition:
-    query = query[:-9] + condition[:-4] + "LIMIT 10;"                                                                                                                                                                              
-
-rows = None    
-try:   
-    cursor.execute(query)
-    rows = cursor.fetchall()
-except Exception, e:   
-    print '<div class = "error">Search Error! {}.</div>'.format(repr(e))
+result =  sql.search(db, cursor, table, fields, keys, exact_keys, select=["PlayerID", "UserName"], ignore=ignore, limit=10)
+rows = result[0];
+print result[1]; 
     
 ####### DISPLAY RESULTS TABLE  #############################################################################################
 print '<table class="gridtable" align="center">'
@@ -221,17 +156,14 @@ print '</tr>'
 if rows != None: 
     for row in rows:
         print '<tr>'
-        print '<td><a href="player.py?PlayerID={0}">{0}</a></td><td><a href="player.py?PlayerID={0}">{1}</a></td>'.format(row[0], row[1])
+        print '<td><a href="player.py?PlayerID={0}">{0}</a></td><td><a href="player.py?PlayerID={0}">{1}</a></td>'.format(escape(str(row[0])), escape(str(row[1])))
         print '</tr>'
                                                                                              
 print '</table>'    
                                                                                          
-print """
-</body>
-</html>
-"""
-
+print html.end_html
+                     
 # Tidy up and free resources
 cursor.close()
 db.close()
-sess.close()
+sess.close()                                                                                        
