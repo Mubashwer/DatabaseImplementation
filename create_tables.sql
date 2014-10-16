@@ -48,7 +48,8 @@ CREATE TABLE Player (
     Salt                    CHAR(32)       NOT NULL,
     Phone                   VARCHAR(14)    DEFAULT NULL,
     VoiP                    VARCHAR(30)    NOT NULL,
-    UNIQUE (UserName, Email),
+    UNIQUE (UserName),
+    UNIQUE (Email),
     PRIMARY KEY (PlayerID),
     FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID) 
 	    ON DELETE SET NULL
@@ -146,7 +147,8 @@ CREATE TABLE Viewer(
     UserName                VARCHAR(12)    NOT NULL,
     HashedPassword          CHAR(128)      NOT NULL,
     Salt                    CHAR(32)       NOT NULL,
-    UNIQUE (UserName, Email),
+    UNIQUE (UserName),
+    UNIQUE (Email),
     PRIMARY KEY (ViewerID)
 ) ENGINE=InnoDB;
 
