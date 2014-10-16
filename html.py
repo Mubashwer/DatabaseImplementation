@@ -26,7 +26,7 @@ def make_navbar(loggedIn, userType):
     href = {None: ('Log In', 'login.py'), 0: ('Log In', 'login.py'), 1: ('Log Out', 'do_logout.py')}
 
     if (not loggedIn or not userType == 'S'):
-        print """
+        return """
     <div id="header">
         <div id="navbar">
         <ul>
@@ -39,7 +39,7 @@ def make_navbar(loggedIn, userType):
     </div>
     """.format(href[loggedIn][1], href[loggedIn][0])
     else:        
-        print """
+        return """
     <div id="header">
                 <div id="navbar">
                     <ul>
