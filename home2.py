@@ -58,7 +58,7 @@ else if(loggedIn && userType != 'S')
     </ul>
     </div>
 </div>
-
+"""
 else:
     
     print """
