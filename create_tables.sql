@@ -48,6 +48,7 @@ CREATE TABLE Player (
     Salt                    CHAR(32)       NOT NULL,
     Phone                   VARCHAR(14)    DEFAULT NULL,
     VoiP                    VARCHAR(30)    NOT NULL,
+    UNIQUE (UserName, Email),
     PRIMARY KEY (PlayerID),
     FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID) 
 	    ON DELETE SET NULL
@@ -100,7 +101,7 @@ CREATE TABLE Video (
     VideoName               VARCHAR(50)    NOT NULL,
     URL                     VARCHAR(50)    NOT NULL,
     Price                   DECIMAL(5,2)   DEFAULT 0.00,
-    VideoType               VARCHAR(45)    DEFAULT 'Non-Premium',
+    VideoType               VARCHAR(45)    DEFAULT 'Free' NOT NULL,
     InstanceRunID           SMALLINT       NOT NULL,
     GameID                  MEDIUMINT      NOT NULL, 
     PRIMARY KEY (VideoID),
@@ -145,6 +146,7 @@ CREATE TABLE Viewer(
     UserName                VARCHAR(12)    NOT NULL,
     HashedPassword          CHAR(128)      NOT NULL,
     Salt                    CHAR(32)       NOT NULL,
+    UNIQUE (UserName, Email),
     PRIMARY KEY (ViewerID)
 ) ENGINE=InnoDB;
 
@@ -189,10 +191,10 @@ CREATE TABLE ViewerOrderLine(
     FlagPerk                BOOLEAN        NOT NULL,
     PRIMARY KEY (VideoID, ViewerOrderID),
     FOREIGN KEY (VideoID) REFERENCES Video(VideoID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (ViewerOrderID) REFERENCES ViewerOrder(ViewerOrderID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -249,10 +251,10 @@ CREATE TABLE InstanceEquipment(
     EquipmentID            SMALLINT        NOT NULL,
     PRIMARY KEY (InstanceRunID, EquipmentID),
     FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (EquipmentID) REFERENCES Equipment(EquipmentID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -283,9 +285,9 @@ CREATE TABLE AccessCodeVideo(
     VideoID              MEDIUMINT        NOT NULL,
     PRIMARY KEY (AccessCodeID, VideoID),
     FOREIGN KEY (AccessCodeID) REFERENCES AccessCode(AccessCodeID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (VideoID) REFERENCES Video(VideoID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
