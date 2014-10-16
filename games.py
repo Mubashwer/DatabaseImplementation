@@ -25,7 +25,7 @@ if (not loggedIn or not userType == 'S'):
 
 # ---------------------------------------------------------------------------------------------------------------------
     
-print html.make_head("video_modify.css", title="WWAG Games")
+print html.make_head("video_modify.css", title="WWAG Achievements")
 
 print html.make_navbar(loggedIn, userType)
 
@@ -35,6 +35,7 @@ db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29
 cursor = db.cursor()
 table = "Game"
 keys = ['GameID', 'Genre', 'Review', 'StarRating', 'ClassificationRating', 'PlatformNotes', 'PromotionLink', 'Cost', 'GameName']
+ignore = ['Genre', 'Review', 'StarRating', 'ClassificationRating', 'PlatformNotes', 'PromotionLink', 'Cost', 'GameName']
 exact_keys = ['GameID', 'StarRating', 'Cost']
 pk = ['GameID']
 
@@ -43,7 +44,7 @@ row = None
 message = ""
 
 for key in fields:
-    fields[key] = form.getvalue(key)      
+    fields[key] = form.getvalue(key)       
 
         
 ######## If INSERT button is pressed then ... ###########################################################################
@@ -60,14 +61,14 @@ if form.getvalue("submit") == "Update":
         
 ######## LOAD RESULT ... ############################################################################
         
-result =  sql.search(db, cursor, table, fields, keys, exact_keys, limit=10, fetch_one=True)
+result =  sql.search(db, cursor, table, fields, keys, exact_keys, ignore=ignore, limit=10, fetch_one=True)
 row = result[0];
 
 if row == None:
     row = ["", "", "", "", "", "",  "", "", ""]
 
 row = list(row)
-for i in range(9):
+for i in range(8):
     if row[i] == None:
         row[i] = ""
     else:
