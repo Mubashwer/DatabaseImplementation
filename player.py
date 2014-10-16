@@ -176,7 +176,7 @@ if form.getvalue("submit") == "DeleteAddress":
     
 ####### GENERATE AND EXECUTE SEARCH QUERY FOR ADDRESS  ################################################################################
 
-result =  sql.search(db, cursor, "PlayerAddress", fields, address_keys, address_exact, select=["AddressID", "StartDate", "EndDate"], ignore=address_keys, order="ORDER BY StartDate DESC")
+result =  sql.search(db, cursor, "PlayerAddress", fields, address_keys, address_exact, select=["AddressID", "StartDate", "EndDate"], ignore=['AddressID', 'StartDate', 'EndDate'], order="ORDER BY StartDate DESC")
 rows = result[0];
 print result[1];
 
