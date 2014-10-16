@@ -1,5 +1,5 @@
 # The libraries we'll need
-import sys, cgi, session, redirect, MySQLdb, hashlib, uuid
+import sys, cgi, session, redirect, MySQLdb, hashlib, uuid, html
 
 # ---------------------------------------------------------------------------------------------------------------------
 sess = session.Session(expires=20*60, cookie_path='/')
@@ -11,20 +11,11 @@ print "%s\nContent-Type: text/html\n" % (sess.cookie)
 
 # ---------------------------------------------------------------------------------------------------------------------
 # login logic
-loggedIn = 0
+
 if loggedIn:
     
     # redirect to home page
-    print """\
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta http-equiv="refresh" content="0;url=%s">
-    </head>
-    <body>
-    </body>
-    """ % redirect.getQualifiedURL("/~mskh/dbsys/dbs2014sm2group29/home.py")
+    print html.do_redirect("home.py")
     
 else:
     signedIn = False
@@ -36,8 +27,8 @@ else:
         cursor.execute ("""
             SELECT UserName, Salt, HashedPassword
             FROM Player
-            WHERE UserName = '{}'
-        """.format (form["username"].value))
+            WHERE UserName = %s ;
+        """, (form["username"].value, ))
         
         if cursor.rowcount == 1:
             row = cursor.fetchone()
@@ -53,8 +44,8 @@ else:
             cursor.execute ("""
                 SELECT UserName, Salt, HashedPassword, ViewerType
                 FROM Viewer
-                WHERE UserName = '{}'
-            """.format (form["username"].value))  
+                WHERE UserName = %s ;
+            """, (form["username"].value, ))  
 
             if cursor.rowcount == 1:
                 row = cursor.fetchone()
@@ -77,20 +68,7 @@ else:
         # tidy up
         cursor.close()
         db.close()
-
-    whereToNext = "/~mskh/dbsys/dbs2014sm2group29/greeting.py" 
     sess.close()
     
     #redirect to greeting page
-    print """\
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta http-equiv="refresh" content="0;url=%s">
-    </head>
-    <body>
-    </body>
-    #""" % redirect.getQualifiedURL(whereToNext)
-
-​
+    print html.do_redirect("greeting.py")
