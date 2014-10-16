@@ -25,7 +25,7 @@ if (not loggedIn or not userType == 'S'):
 
 # ---------------------------------------------------------------------------------------------------------------------
     
-print html.make_head("video_modify.css", title="WWAG Achievements")
+print html.make_head("video_modify.css", title="WWAG Games")
 
 print html.make_navbar(loggedIn, userType)
 
