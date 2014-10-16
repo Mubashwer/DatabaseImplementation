@@ -151,24 +151,8 @@ print """
 if form.getvalue("submit") == "Insert":
 
     print sql.insert(db, cursor, "Address", fields, keys)
+    if(fields['AddressID'] == None):
+        fields['AddressID'] = cursor.lastrowid  
+    print sql.insert(db, cursor, "{}Address".format(table), fields, keys_a) 
     
-    query = '''INSERT INTO {}Address VALUES ('''.format(table)  
-    args = ()
-    for key in keys_a:
-        if key == 'AddressID' and fields[key] == None:
-            query += 'LAST_INSERT_ID(), ' 
-        elif fields[key] == None:
-            query += "DEFAULT, "
-        else:        
-            query += "%s, ".format(fields[key])
-            args += (fields[key], )
-    query = query[:-2] + ");"
     
-    try:       
-        cursor.execute(query, args)
-        db.commit()
-        print '<div class = "success">Insert Successful!</div>'
-    except Exception, e:
-        db.rollback()
-        print '<div class = "error">Insert Error! {}.</div>'.format(repr(e))
-        
