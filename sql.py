@@ -69,7 +69,7 @@ def delete(db, cursor, table, fields, pk):
 
 
 # generic function for search in MySQL db table (single table only)
-def search(db, cursor, table, fields, keys, exact_keys, select=[], ignore=[], limit=0, fetch_one=False):
+def search(db, cursor, table, fields, keys, exact_keys, select=[], ignore=[], limit=10, fetch_one=False):
     query = '''SELECT * FROM {} '''.format(table)
     vars = ""
     
