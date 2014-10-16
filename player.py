@@ -44,7 +44,7 @@ keys = ['PlayerID', 'SupervisorID', 'FirstName', 'LastName', 'Role', 'PlayerType
 exact_keys = ['PlayerID', 'SupervisorID']
 ignore = ['HashedPassword', 'Salt']
 pk = ['PlayerID']
-
+a_keys = ['AddressID', 'StreetNumber', 'StreetNumberSuffix', 'StreetName', 'StreetType', 'AddressType', 'AddressTypeIdentifier', 'MinorMunicipality', 'MajorMunicipality', 'GoverningDistrict', 'PostalArea', 'Country']
 address_keys = ['PlayerID', 'AddressID', 'StartDate', 'EndDate']
 address_exact = ['PlayerID', 'AddressID']
 address_pk = ['PlayerID', 'AddressID', 'StartDate']
@@ -171,6 +171,7 @@ if form.getvalue("submit") == "Change":
 ######## If DELETE ADDRESS button is pressed then ... ###########################################################################        
 if form.getvalue("submit") == "DeleteAddress":
     print sql.delete(db, cursor, "PlayerAddress", fields, address_pk)
+    print sql.delete(db, cursor, "Address", fields, ['AddressID'])
     
 ####### GENERATE AND EXECUTE SEARCH QUERY FOR ADDRESS  ################################################################################
 
