@@ -43,10 +43,7 @@ row = None
 message = ""
 
 for key in fields:
-    if form.getvalue(key) != None:
-        fields[key] = unescape(form.getvalue(key)) 
-    else:
-        fields[key] = None;       
+    fields[key] = form.getvalue(key)      
 
         
 ######## If INSERT button is pressed then ... ###########################################################################
