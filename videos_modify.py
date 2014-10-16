@@ -34,7 +34,7 @@ print """
 <h2 class="header">VIDEOS</h2>
 <form id = "myForm" action="videos_modify.py" method="post">
     <fieldset id="search">
-        <legend>Video Search</legend>
+        <legend>Maintain Video</legend>
         
 
         <div class="textbox">
