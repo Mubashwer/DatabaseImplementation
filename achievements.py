@@ -104,11 +104,8 @@ fields = dict.fromkeys(keys)
 table = "InstanceRun"
 
 for key in fields:
-    if form.getvalue(key) != None:
-        fields[key] = unescape(form.getvalue(key)) 
-    else:
-        fields[key] = None;      
-
+    fields[key] = form.getvalue(key) 
+    
 ######## If INSERT button is pressed then ... ###########################################################################
 if form.getvalue("submit") == "Insert":    
     print sql.insert(db, cursor, table, fields, keys)
