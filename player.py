@@ -40,7 +40,7 @@ db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29
 table = 'Player'
 cursor = db.cursor()
 keys = ['PlayerID', 'SupervisorID', 'FirstName', 'LastName', 'Role', 'PlayerType', 'ProfileDescription', 'Email', 'UserName', 'HashedPassword', 'Salt', 'Phone', 'VoiP']
-ignore_form = ['SupervisorID', 'FirstName', 'LastName', 'Role', 'PlayerType', 'ProfileDescription', 'Email', 'HashedPassword', 'Salt', 'Phone', 'VoiP']
+ignore_form = ['SupervisorID', 'FirstName', 'LastName', 'Role', 'PlayerType', 'ProfileDescription', 'Email', 'UserName', 'HashedPassword', 'Salt', 'Phone', 'VoiP']
 exact_keys = ['PlayerID', 'SupervisorID']
 ignore = ['HashedPassword', 'Salt']
 pk = ['PlayerID']
@@ -78,17 +78,17 @@ result =  sql.search(db, cursor, table, fields, keys, exact_keys, ignore=ignore_
 row = result[0];
 
 if row == None:
-    row = ["", "", "", "", "", "",  "", "", ""]
+    row = ["", "", "", "", "", "",  "", "", "", "", "", "", ""]
 
 row = list(row)
-for i in range(9):
+for i in range(13):
     if row[i] == None:
         row[i] = ""
     else:
         row[i] = escape(str(row[i]), entities)   
 
 ####### PRINT FORM ##############################################################################
-print message
+
 print """
 <div class="search_form">
 <h2 class="header">PLAYERS</h2>
@@ -193,6 +193,7 @@ print result[1];
     
 ####### DISPLAY RESULTS TABLE  #############################################################################################
 print message
+                                        
 print '''<div class="insert_button"><input type="button" onClick="parent.location='address_insert.py?PlayerID={}'" value='InsertAddress'></div>'''.format(form.getvalue(keys[0]))
 print '<table class="gridtable" align="center">'
 
