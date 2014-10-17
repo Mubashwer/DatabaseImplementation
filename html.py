@@ -1,4 +1,4 @@
-import Script, redirect
+import Script, redirect, os
 
 def make_head(css_file, title = 'WWAG', extra_script = ""):
     """Constructs and returns the html header"""
@@ -58,21 +58,48 @@ def make_navbar(loggedIn, userType):
     """
 
 
-def do_redirect(url):
+def do_redirect(script, delay=0):
     """Constructs and returns the html header"""
-    parent = "/~mskh/dbsys/dbs2014sm2group29/"
+    url = os.path.split(os.environ['REQUEST_URI'])[0] + '/' + script
     return"""
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta http-equiv="refresh" content="0;url={}">
+<meta http-equiv="refresh" content="{};url={}">
 </head>
 <body>
-    """.format(redirect.getQualifiedURL(parent + url))
+    """.format(delay, redirect.getQualifiedURL(url))
 
 end_html = """
 </body>
 </html>
     """
+
+def wrap_p(text, p_id=None):
+    if p_id:
+        return '<p id="{}">'.format(p_id) + text + '</p>\n'
+    else:
+        return "<p>" + text + "</p>\n"
+
+def wrap_div(text, div_id=None):
+    return '<div id="{}">'.format(div_id) + text + "</div>"
+
+def wrap_link(text, href=None):
+    return "<a href='{}'>".format(href) + text + "</a>"
+
+def wrap_tr(text):
+    return "<tr>" + text + "</tr>\n"
+
+def wrap_td(text):
+    return "<td>" + text + "</td>"
+
+def wrap_table(text):
+    return "<table>\n" + text + "\n</table>\n"
+
+def wrap_form(text, action = None):
+    return '<form name="form" action="{}" method="post">\n<fieldset>\n".format(action) \
++ text + "\n</fieldset>\n</form>\n '
+
+
