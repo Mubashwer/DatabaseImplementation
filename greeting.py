@@ -21,7 +21,7 @@ print html.make_head("login.css", title="WWAG Greeting")
 if not loggedIn:
     status = "Unsuccessful"
     message = "The username or password you've entered doesn't match our records."
-    whereToNext = "/~mskh/dbsys/dbs2014sm2group29/login.py"
+    whereToNext = "login.py"
     div_id = "message_fail" 
     
 elif sess.data.get('userType') == 'S' or sess.data.get('userType') == 'C':
@@ -47,7 +47,7 @@ elif sess.data.get('userType') == 'S' or sess.data.get('userType') == 'C':
     firstName = escape(row[0], entities);
     lastName = escape(row[1], entities);
     message = "Welcome back, " + firstName + " " + lastName + "!"
-    whereToNext = "/~mskh/dbsys/dbs2014sm2group29/home.py" 
+    whereToNext = "home.py" 
     # tidy up
     cursor.close()
     db.close()
@@ -56,7 +56,7 @@ else:
     status = "Successful"
     message = "Welcome back!"                        
     div_id = "message"
-    whereToNext = "/~mskh/dbsys/dbs2014sm2group29/home.py"                     
+    whereToNext = "home.py"                     
     
     
 print """
@@ -70,8 +70,10 @@ print """
                         
 # Tidy up and free resources
 sess.close()                        
-
-print """<meta http-equiv="refresh" content="5;url={}">""" .format(redirect.getQualifiedURL(whereToNext))                       
+delay = 0
+if loggedIn:
+    delay=5
+print html.do_redirect(whereToNext,delay=delay)                       
 
                         
 
