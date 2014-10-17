@@ -29,7 +29,6 @@ if (not loggedIn or not userType == 'S'):
 # ---------------------------------------------------------------------------------------------------------------------
     
 print html.make_head("video_modify.css", title="WWAG Player")
-
 print html.make_navbar(loggedIn, userType)
 
 
@@ -41,7 +40,7 @@ db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29
 table = 'Player'
 cursor = db.cursor()
 keys = ['PlayerID', 'SupervisorID', 'FirstName', 'LastName', 'Role', 'PlayerType', 'ProfileDescription', 'Email', 'UserName', 'HashedPassword', 'Salt', 'Phone', 'VoiP']
-ignore_form = ['SupervisorID', 'FirstName', 'LastName', 'Role', 'PlayerType', 'ProfileDescription', 'Email', 'UserName', 'HashedPassword', 'Salt', 'Phone', 'VoiP']
+ignore_form = ['SupervisorID', 'FirstName', 'LastName', 'Role', 'PlayerType', 'ProfileDescription', 'Email', 'HashedPassword', 'Salt', 'Phone', 'VoiP']
 exact_keys = ['PlayerID', 'SupervisorID']
 ignore = ['HashedPassword', 'Salt']
 pk = ['PlayerID']
@@ -50,10 +49,10 @@ address_keys = ['PlayerID', 'AddressID', 'StartDate', 'EndDate']
 address_exact = ['PlayerID', 'AddressID']
 address_pk = ['PlayerID', 'AddressID', 'StartDate']
 
-fields = dict.fromkeys(keys)
+fields = dict.fromkeys(keys + address_keys + ['StartDateOld'])
 message = "";
 
-for key in keys + address_keys:
+for key in fields:
     fields[key] = form.getvalue(key) 
 
 ######## If UPDATE button is pressed then ... ############################################################################
@@ -72,6 +71,9 @@ if form.getvalue("submit") == "Delete":
     message =  sql.delete(db, cursor, table, fields, pk)
         
 ####### GENERATE AND EXECUTE SEARCH QUERY ##########################################################################
+if (fields['UserName'] == None):
+    fields['UserName'] = userName
+    
 result =  sql.search(db, cursor, table, fields, keys, exact_keys, ignore=ignore_form, limit=10, fetch_one=True)
 row = result[0];
 
@@ -167,7 +169,15 @@ print """
 
 ######## If CHANGE ADDRESS (Date, ID) button is pressed then ... ###########################################################################        
 if form.getvalue("submit") == "Change":
-    print sql.update(db, cursor, "PlayerAddress", fields, address_keys, address_pk)
+    query = "UPDATE PlayerAddress SET StartDate = %s, EndDate = %s WHERE PlayerID = %s AND AddressID = %s AND StartDate = %s;"
+    args = (fields['StartDate'], fields['EndDate'], fields['PlayerID'], fields['AddressID'], fields['StartDateOld'])
+    
+    try:   
+        cursor.execute(query, args)
+        db.commit()
+        print '<div class = "success">Update Successful!</div>'
+    except Exception, e:
+        print '<div class = "error">Update Error! {}.</div>'.format(repr(e))
         
 ######## If DELETE ADDRESS button is pressed then ... ###########################################################################        
 if form.getvalue("submit") == "DeleteAddress":
@@ -197,7 +207,7 @@ if rows != None:
         print '<tr>'
         print '<form action="player.py?PlayerID={}" method="post">'.format(form.getvalue(keys[0]))
         print '<td><input name="AddressID" id="AddressID" type="hidden" value ="{0}" />{0}</td>'.format(row[0])
-        print '<td><input name="StartDate" id="StartDate" type="hidden" value ="{0}" />{0}</td>'.format(escape(str(row[1]), entities))
+        print '<td><input name="StartDateOld" id="StartDateOld" type="hidden" value ="{0}" /><input name="StartDate" id="StartDate" type="text" value ="{0}" /></td>'.format(escape(str(row[1]), entities))
         print '<td><input name="EndDate" id="EndDate" type="text" value ="{}" /></td>'.format(escape(str(row[2]), entities))
         print '<td><input type="submit" name="submit" value="Change" /></td>'
         print '''<td><input type="button" onClick="parent.location='address_update.py?AddressID={}'" value='UpdateAddress'></td>'''.format(row[0])
