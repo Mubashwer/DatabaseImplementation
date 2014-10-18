@@ -160,7 +160,7 @@ CREATE TABLE CrowdFundingViewer(
     TotalAmountDonated      DECIMAL(9,2)   DEFAULT 0.00,
     PRIMARY KEY (ViewerID),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -170,7 +170,7 @@ CREATE TABLE PremiumViewer(
     RenewalDate             DATE           NOT NULL,
     PRIMARY KEY (ViewerID),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
