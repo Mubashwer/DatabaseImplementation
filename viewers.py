@@ -71,7 +71,7 @@ print """
         
          <div class="textbox">
             <label for="DateOfBirth">Date of Birth:</label>
-            <input name="DateOfBirth id="DateOfBirth" type="date" />
+            <input name="DateOfBirth" id="DateOfBirth" type="date" />
         </div>
         
         <div class="textbox">
@@ -138,6 +138,7 @@ db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29
 cursor = db.cursor()
 table = 'Viewer'
 keys = ['ViewerID', 'ViewerType', 'DateOfBirth','Email', 'UserName', 'HashedPassword', 'Salt']
+ignore_keys = ['ViewerType', 'DateOfBirth','Email', 'UserName', 'HashedPassword', 'Salt']
 keys_c = ['ViewerID', 'FirstName', 'LastName', 'TotalAmountDonated']
 keys_p = ['ViewerID', 'RenewalDate']
 exact_keys = ['ViewerID', 'TotalAmountDonated']
@@ -149,6 +150,8 @@ for key in fields:
     fields[key] = form.getvalue(key)       
 
 ######## If INSERT button is pressed then ... ###########################################################################
+message = ""
+stop = 0
 if form.getvalue("submit") == "Insert":
     fields['Salt'] = uuid.uuid4().hex
     if fields["HashedPassword"] != None:
@@ -157,19 +160,35 @@ if form.getvalue("submit") == "Insert":
         print '<div class = "error">Insert Error! Password is empty.</div>'
         sys.exit(0);
         print html.end_html      
-    print sql.insert(db, cursor, table, fields, keys)
+    
+    # Insert into main viewers table
+    message =  sql.insert(db, cursor, table, fields, keys)
+    if 'Error!' in message:
+        stop = 1
+    
     if(fields['ViewerID'] == None):
         fields['ViewerID'] = cursor.lastrowid        
     
-    if fields['ViewerType'] == 'B' or fields['ViewerType'] == 'C':
-          print sql.insert(db, cursor, 'CrowdFundingViewer', fields, keys_c)
-    if fields['ViewerType'] == 'B' or fields['ViewerType'] == 'P':
-          print sql.insert(db, cursor, 'PremiumViewer', fields, keys_p)              
+    #Insert into subtypes if applicable and delete viewer if there is any error in inserting in subtypes table
+    if stop == 0 and (fields['ViewerType'] == 'B' or fields['ViewerType'] == 'C'):
+          message =  sql.insert(db, cursor, 'CrowdFundingViewer', fields, keys_c)
+          if 'Error!' in message:
+            sql.delete(db, cursor, table, fields, ['ViewerID'])
+            stop = 1
+
+        
+    if stop == 0 and (fields['ViewerType'] == 'B' or fields['ViewerType'] == 'P'):
+          message =  sql.insert(db, cursor, 'PremiumViewer', fields, keys_p)              
+          if 'Error!' in message:
+              sql.delete(db, cursor, table, fields, ['ViewerID'])
+
     
+print message                                                                                         
+print html.end_html
 
 ####### GENERATE AND EXECUTE SEARCH QUERY  ################################################################################
 
-result =  sql.search(db, cursor, table, fields, keys, exact_keys, select=["ViewerID", "UserName"], ignore=ignore, limit=10)
+result =  sql.search(db, cursor, table, fields, keys, exact_keys, select=["ViewerID", "UserName"], ignore=ignore_keys, limit=10)
 
 rows = result[0];
 print result[1]; 
