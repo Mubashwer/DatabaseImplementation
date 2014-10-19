@@ -1,8 +1,13 @@
 # The libraries we'll need
-import sys, cgi, redirect, session, MySQLdb
+import sys, cgi, redirect, session, MySQLdb, html, warnings
+from xml.sax.saxutils import *
+
+warnings.filterwarnings('error', category=MySQLdb.Warning)
 
 # Get the session and check if logged in
 sess = session.Session(expires=60*20, cookie_path='/')
+loggedIn = sess.data.get('loggedIn')
+userType = sess.data.get('userType')
 
 form = cgi.FieldStorage()
 db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29", "info20003g29", 3306)
@@ -47,13 +52,14 @@ else:
         <tr id='reviewlabel'>
             <td colspan='2'>Review(s):</td>
         </tr>
-    """.format(rows[0]["ModelAndMake"], rows[0]["ProcessorSpeed"])
+    """.format(escape(str(rows[0]["ModelAndMake"])), escape(str(rows[0]["ProcessorSpeed"])))
+    
     for result in rows:
         body += """
         <tr class = 'review'>
             <td colspan='2'>{}</td>
         </tr>
-         """.format(result["EquipmentReview"])
+         """.format(escape(str(result["EquipmentReview"])))
     body += """
     </table>
     """
@@ -64,32 +70,10 @@ print "%s\nContent-Type: text/html\n" % (sess.cookie)
 if not mnm:
     mnm = "None"
 
-print """
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta name="keywords" content="" />
-<meta name="description" content="" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>WWAG Equipment: {}</title>
-<link href="css/player_info.css" rel="stylesheet" type="text/css" media="screen" />
-</head>
-<body>
-""".format(mnm)
+print html.make_head("login.css", title="WWAG Equipment")
 
-print """
-<div id="header">
-    <div id="navbar">
-    <ul>
-        <li><a href="login.py" style="text-decoration:none;color:#fff">Log In</a></li>
-        <li><a href="aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
-        
-        <li><a href="videos_search.py" style="text-decoration:none;color:#fff">Videos</a></li>
-        <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
-              
-    </ul>
-    </div>
-</div>
-"""
+print html.make_navbar(loggedIn, userType)
+print '<div id="greeting"><h2>{}</h2><div id = "message">'.format(mnm)
 
 if query_success:
     print body
@@ -97,6 +81,7 @@ else:
     print message
 
 print """
+</div></div>
 </body>
 </html>
  """

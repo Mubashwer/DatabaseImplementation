@@ -4,10 +4,10 @@
 }
 
 #header ul ul li {
-		float: none; 
-		border-top: 1px solid #6b727c;
-		border-bottom: 1px solid #575f6a;
-		position: left;
+        float: none; 
+        border-top: 1px solid #6b727c;
+        border-bottom: 1px solid #575f6a;
+        position: left;
    
  }
  #header ul  li a {
@@ -25,27 +25,27 @@
 
 
 #header {
-	position: left;
-	top: -10px;
-	background-color: #3c4543;
-	border-top-left-radius: 15px;
-	border-top-right-radius: 15px;
+    position: left;
+    top: -10px;
+    background-color: #3c4543;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
    text-decoration:none;
 }
 
 
 
 #navbar {
-	position: fixed;
-	top:10px;
-	left:0%;
-	margin-left:2px;
+    position: fixed;
+    top:10px;
+    left:0%;
+    margin-left:2px;
 }
 
 ul{
-	list-style-type: none;
-	position: fixed;
-	margin: -10px;
+    list-style-type: none;
+    position: fixed;
+    margin: -10px;
   text-decoration:none; 
 }
 
@@ -197,26 +197,26 @@ body {
 }
 
 table.gridtable {
-	font-family: verdana,arial,sans-serif;
-	font-size:11px;
-	color:#333333;
-	border-width: 1px;
-	border-color: #666666;
-	border-collapse: collapse;
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
 }
 table.gridtable th {
-	border-width: 1px;
-	padding: 8px;
-	border-style: solid;
-	border-color: #666666;
-	background-color: #d6e5f4;
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #d6e5f4;
 }
 table.gridtable td {
-	border-width: 1px;
-	padding: 8px;
-	border-style: solid;
-	border-color: #666666;
-	background-color: #ffffff;
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #ffffff;
 }
 
 .error{
@@ -227,3 +227,31 @@ table.gridtable td {
 .success {
   font-weight:bold;
 }
+
+table.gridtable3 {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
+    margin-top:100px;
+}
+table.gridtable3 th {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #d6e5f4;
+}
+table.gridtable3 td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #ffffff;
+}
+
+
+
+

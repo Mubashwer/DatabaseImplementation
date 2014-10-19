@@ -109,3 +109,4 @@ def search(db, cursor, table, fields, keys, exact_keys, select=[], ignore=[], li
             return (cursor.fetchall(), "")
     except Exception, e:   
         return(None, '<div class = "error">Search Error! {}.</div>'.format(repr(e)));    
+

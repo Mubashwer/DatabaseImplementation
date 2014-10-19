@@ -10,12 +10,6 @@
         position: left;
    
  }
- 
- #header ul  li a {
-  display: block;
-  padding: 12px 20px;
-  text-decoration: none;
-}
 
 #header ul li:hover > ul{
   display:block;
@@ -23,6 +17,11 @@
   
 }
 
+#header ul  li a {
+  display: block;
+  padding: 12px 20px;
+  text-decoration: none;
+}
 
 
 #header {
@@ -59,7 +58,7 @@ li {
     float: right;
     font-weight: bold;
     margin-top: 0px;                                  
-   // padding: 12px 20px;
+    //padding: 12px 20px;
     box-shadow:3px 3px 3px #888;
     text-decoration: none !important;
  }

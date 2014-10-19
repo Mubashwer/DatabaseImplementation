@@ -72,3 +72,4 @@ else:
     
     #redirect to greeting page
     print html.do_redirect("greeting.py")
+

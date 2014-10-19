@@ -1,8 +1,8 @@
 # The libraries we'll need
 import sys, cgi, redirect, session, MySQLdb, warnings, sql, html
 from xml.sax.saxutils import *
-
 warnings.filterwarnings('error', category=MySQLdb.Warning)
+
 # Get the session and check if logged in
 sess = session.Session(expires=60*20, cookie_path='/')
 loggedIn = sess.data.get('loggedIn')
@@ -15,10 +15,9 @@ print "%s\nContent-Type: text/html\n" % (sess.cookie)
 form = cgi.FieldStorage()
 # additional entity to replace in escape function
 entities = {'"': '&quot;'} 
-
 # ---------------------------------------------------------------------------------------------------------------------
 # Only logged in users who are players can access this page
-if not loggedIn or not userType == 'S':
+if (not loggedIn or not userType == 'S'):
     # redirect to home page
     print html.do_redirect("home.py")
     sess.close()   
@@ -26,67 +25,47 @@ if not loggedIn or not userType == 'S':
 
 # ---------------------------------------------------------------------------------------------------------------------
     
-print html.make_head("video_modify.css", title="WWAG Instances")
+print html.make_head("video_modify.css", title="WWAG Achievements")
 
 print html.make_navbar(loggedIn, userType)
 
 print """
-<div id="header">
-            <div id="navbar">
-                <ul>
-            <li><a href="do_logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
-            <li><a href="aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
-            <li><a href="players.py" style="text-decoration:none;color:#fff">Players</a></li>
-            <li><a href="games.py" style="text-decoration:none;color:#fff">Games</a></li>
-            <li><a href="instance_runs.py" style="text-decoration:none;color:#fff">Instance Runs</a></li>
-            <li><a href="achievements.py" style="text-decoration:none;color:#fff">Achievements</a></li>
-            <li><a href="viewers.py" style="text-decoration:none;color:#fff">Viewers</a></li>
-            <li><a href="videos_modify.py" style="text-decoration:none;color:#fff">Videos</a></li>
-            <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
-                </ul>
-            </div>
-            
-  </div>
-"""
-
-print """
 <div class="search_form">
-<h2 class="header">INSTANCE RUNS</h2>
-<form action="instance_runs.py" method="post">
+<h2 class="header">ACHIEVEMENTS</h2>
+<form id="myForm" action="achievements.py" method="post">
     <fieldset id="search">
-        <legend>Maintain Instance Run</legend>
+        <legend>Maintain Achievement</legend>
+        
+        <div class="textbox">
+            <label for="AchievementID">Achievement ID:</label>
+            <input name="AchievementID" id="AchievementID" type="text" />
+        </div>
         
         <div class="textbox">
             <label for="InstanceRunID">Instance Run ID:</label>
             <input name="InstanceRunID" id="InstanceRunID" type="text" />
         </div>
-
-        <div class="textbox">
-            <label for="SupervisorID">Supervisor ID:</label>
-            <input name="SupervisorID" id="SupervisorID" type="text" />
-        </div>
-        
-         <div class="textbox">
-            <label for="InstanceName">Instance Name:</label>
-            <input name="InstanceName" id="InstanceName" type="text" />
-        </div>
         
         <div class="textbox">
-            <label for="RecordedTime">Recorded Time:</label>
-            <input name = "RecordedTime" id= "RecordedTime" type="datetime-local" step=1>
+            <label for="WhenAchieved">Achievement Time:</label>
+            <input name = "WhenAchieved" id= "WhenAchieved" type="datetime-local" step=1>
         </div>
 
         <div class="textbox">
-            <label for="CategoryName">Category Name:</label>
-            <input name="CategoryName" id="CategoryName" type="text" />
+            <label for="AchievementName">Achievement Name:</label>
+            <input name="AchievementName" id="AchievementName" type="text" />
         </div>
 
+        <div class="textbox">
+            <label for="RewardBody">Reward Body:</label>
+            <input name="RewardBody" id="RewardBody" type="text" />
+        </div>
     </fieldset>
     
     <div id="buttons" class="button_select">
         <input type="reset" value="Reset" />
         <input type="submit" name="submit" value="Insert" />
-        <input type="submit" name="submit" value="Search" />
+        <input type="submit" name="submit" value="Search" onClick="DoSubmit()" />
     </div>
 </form>
 </div>
@@ -96,16 +75,16 @@ print """
 
 db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29", "info20003g29", 3306)
 cursor = db.cursor()
-table = "InstanceRun"
-keys = ['InstanceRunID', 'SupervisorID', 'InstanceName', 'RecordedTime', 'CategoryName']
-exact_keys = ['InstanceRunID', 'SupervisorID', 'RecordedTime']
-pk = ['InstanceRunID'];
+table = "Achievement"
+keys = ['AchievementID', 'InstanceRunID', 'WhenAchieved', 'AchievementName', 'RewardBody']
+exact_keys = ['AchievementID', 'InstanceRunID', 'WhenAchieved']
+pk = ['AchievementID']
 fields = dict.fromkeys(keys)
-table = "InstanceRun"
 
 for key in fields:
     fields[key] = form.getvalue(key) 
-    
+
+
 ######## If INSERT button is pressed then ... ###########################################################################
 if form.getvalue("submit") == "Insert":    
     print sql.insert(db, cursor, table, fields, keys)
@@ -116,14 +95,14 @@ if form.getvalue("submit") == "Delete":
         
 ######## If UPDATE button is pressed then ... ############################################################################
 if form.getvalue("submit") == "Update":        
-    print sql.update(db, cursor, table, fields, keys, pk)        
-
+    print sql.update(db, cursor, table, fields, keys, pk) 
+    
 ####### GENERATE AND EXECUTE SEARCH QUERY  ################################################################################
-
 result =  sql.search(db, cursor, table, fields, keys, exact_keys, limit=10)
 rows = result[0];
-print result[1];
-    
+print result[1]; 
+            
+
 ####### DISPLAY RESULTS TABLE  #############################################################################################
 print '<table class="gridtable" align="center">'
 
@@ -138,9 +117,9 @@ print '</tr>'
 if rows != None: 
     for row in rows:
         print '<tr>'
-        print '<form action="instance_runs.py" method="post">'
+        print '<form action="achievements.py" method="post">'
         i = 0
-        print '<td><input name="InstanceRunID" id="InstanceRunID" type="hidden" value = "{0}" />{0}</td>'.format(row[i])
+        print '<td><input name="AchievementID" id="AchievementID" type="hidden" value = "{0}" />{0}</td>'.format(row[i])
         i += 1
         # Print each field of row as textbox
         for key in keys[1:]:
@@ -156,12 +135,19 @@ if rows != None:
                                                                                              
 print '</table>'    
                                                                                          
-print """
-</body>
-</html>
-"""
+print html.end_html
 
 # Tidy up and free resources
 cursor.close()
 db.close()
 sess.close()                                                                                        
+
+
+
+
+
+
+
+
+
+

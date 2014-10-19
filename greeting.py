@@ -80,3 +80,4 @@ print html.do_redirect(whereToNext,delay=delay)
     
 # Footer at the end <p>The Footer</p>
 print html.end_html
+

@@ -155,4 +155,3 @@ if form.getvalue("submit") == "Insert":
         fields['AddressID'] = cursor.lastrowid  
     print sql.insert(db, cursor, "{}Address".format(table), fields, keys_a) 
     
-    

@@ -130,7 +130,7 @@ if rows != None:
         print '<tr>'
         print '<form action="videos_modify.py" method="post">'
         i = 0
-        print '<td><input name="VideoID" id="VideoID" type="hidden" value = "{0}" /><a href="video.py?VideoID={0}">{0}</a></td>'.format(row[i])
+        print '<td><input name="VideoID" id="VideoID" type="hidden" value = "{0}" /><a href="video.py?video_id={0}">{0}</a></td>'.format(row[i])
         i += 1
         # Print each field of row as textbox
         for key in keys[1:]:
@@ -150,3 +150,4 @@ print html.end_html
 
 # Tidy up and free resources
 sess.close()
+

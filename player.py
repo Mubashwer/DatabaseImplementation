@@ -223,4 +223,4 @@ print html.end_html
 # Tidy up and free resources
 cursor.close()
 db.close()
-sess.close()
+sess.close()                    

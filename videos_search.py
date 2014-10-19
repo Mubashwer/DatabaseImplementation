@@ -1,18 +1,20 @@
 # The libraries we'll need
 import sys, cgi, redirect, session, MySQLdb
 from common import *
+from html import *
 # Get the session and check if logged in
 sess = session.Session(expires=60*20, cookie_path='/')
-#loggedIn = sess.data.get('loggedIn') #anybody can access this page
+loggedIn = sess.data.get('loggedIn')
+userType = sess.data.get('userType')
 form = cgi.FieldStorage()
 
 # ---------------------------------------------------------------------------------------------------------------------
 # send session cookie
 print "%s\nContent-Type: text/html\n" % (sess.cookie)
 
-print make_head(title = "WWAG Video Search", css_file = 'video_search.css')
+print make_head("video_modify.css", title = "WWAG Video Search")
 
-print make_navbar()
+print make_navbar(loggedIn, userType)
 
 
 
@@ -135,7 +137,7 @@ cursor.execute(query, tuple(subs))
 rows = cursor.fetchall()
 
 # print results in table
-print '<table>'
+print '<table class="gridtable" align ="center">'
 print '<tr><th>GameID</th><th>GameName</th><th>VideoID</th><th>VideoName</th><th>Price</th><th>VideoType</th><th>InstanceRunID</th><th>InstanceRunName</th></tr>'
 for row in rows:
     print '<tr>'

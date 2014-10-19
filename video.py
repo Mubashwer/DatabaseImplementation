@@ -1,10 +1,12 @@
 # The libraries we'll need
 import sys, cgi, redirect, session, MySQLdb
 from common import *
+from html import *
 
 # Get the session and check if logged in
 sess = session.Session(expires=60*20, cookie_path='/')
 loggedIn = sess.data.get('loggedIn')
+userType = sess.data.get('userType')
 form = cgi.FieldStorage()
 
 db = MySQLdb.connect("info20003db.eng.unimelb.edu.au", "info20003g29", "enigma29", "info20003g29", 3306)
@@ -66,9 +68,9 @@ To get a unique, alphabetically sorted list of usernames, call uniq on the list 
 
 # send session cookie and put in the basic html
 print "%s\nContent-Type: text/html\n" % (sess.cookie)
-print make_head(title = 'WWAG: ' + all_rows[0][0]["VideoName"], css_file = 'video.py')
-print make_navbar()
-
+print make_head('login.css', title = 'WWAG: ' + all_rows[0][0]["VideoName"])
+print make_navbar(loggedIn, userType)
+print '<div id="greeting"><h2>{}</h2><div id = "message">'.format(all_rows[0][0]["VideoName"])
 #Print Video info
 video_info = []
 
@@ -140,5 +142,5 @@ for line in ir_info:
 ir_html = wrap_div(ir_html, div_id = "instance_run_info")
 
 print(ir_html)
-
+print '</div></div>'
 print end_html

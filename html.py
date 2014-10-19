@@ -27,11 +27,13 @@ def make_navbar(loggedIn, userType):
 
     if (not loggedIn or not userType == 'S'):
         return """
-    <div id="header">
+<div id="header">
         <div id="navbar">
         <ul>
+            
             <li><a href="{}" style="text-decoration:none;color:#fff">{}</a></li>
             <li><a href="aboutme.py" style="text-decoration:none;color:#fff">About Us</a></li>
+             <li><a href="venues.py" style="text-decoration:none;color:#fff">Venues</a></li>
             <li><a href="videos_search.py" style="text-decoration:none;color:#fff">Videos</a></li>
             <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>                  
         </ul>
@@ -40,7 +42,7 @@ def make_navbar(loggedIn, userType):
     """.format(href[loggedIn][1], href[loggedIn][0])
     else:        
         return """
-    <div id="header">
+   <div id="header">
                 <div id="navbar">
                     <ul>
                 <li><a href="do_logout.py" style="text-decoration:none;color:#fff">Log Out</a></li>
@@ -50,6 +52,7 @@ def make_navbar(loggedIn, userType):
                 <li><a href="instance_runs.py" style="text-decoration:none;color:#fff">Instance Runs</a></li>
                 <li><a href="achievements.py" style="text-decoration:none;color:#fff">Achievements</a></li>
                 <li><a href="viewers.py" style="text-decoration:none;color:#fff">Viewers</a></li>
+                <li><a href="venues.py" style="text-decoration:none;color:#fff">Venues</a></li>
                 <li><a href="videos_modify.py" style="text-decoration:none;color:#fff">Videos</a></li>
                 <li><a href="home.py" style="text-decoration:none;color:#fff">Home</a></li>
                     </ul>
@@ -84,7 +87,7 @@ def wrap_p(text, p_id=None):
         return "<p>" + text + "</p>\n"
 
 def wrap_div(text, div_id=None):
-    return '<div id="{}">'.format(div_id) + text + "</div>"
+    return "<div id='{}'>".format(div_id) + text + "</div>"
 
 def wrap_link(text, href=None):
     return "<a href='{}'>".format(href) + text + "</a>"
@@ -99,7 +102,7 @@ def wrap_table(text):
     return "<table>\n" + text + "\n</table>\n"
 
 def wrap_form(text, action = None):
-    return '<form name="form" action="{}" method="post">\n<fieldset>\n".format(action) \
-+ text + "\n</fieldset>\n</form>\n '
+    return "<form name='form' action='{}' method='post'>\n<fieldset>\n".format(action) \
++ text + "\n</fieldset>\n</form>\n "
 
 

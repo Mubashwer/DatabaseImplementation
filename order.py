@@ -1,5 +1,6 @@
 import sys, cgi, redirect, session, MySQLdb, time
 from common import *
+from html import *
 
 sess = session.Session(expires=60*20, cookie_path='/')
 form = cgi.FieldStorage()
@@ -66,9 +67,10 @@ print """
 <meta name="description" content="" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>WWAG: Order Confirmation</title>
-<link href="css/order.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="css/login.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
+<div id="greeting"><h2>Order</h2><div id = "message">
 """.format(head_injection)
 
 # Try to insert into the database, print the html body
@@ -124,7 +126,7 @@ except Exception, e:
         """.format(e)
                                     
 print """
+</div></div?
 </body>
 </html>
 """
-​

@@ -27,11 +27,11 @@ function hide(ladiv){
 function details(){
     hide("crowd");
     hide("premium");
-    if(document.forms.myForm.ViewerType.value == 'C')
+    if(document.forms.myForm.ViewerType[0].checked==true)
         show("crowd");
-    else if(document.forms.myForm.ViewerType.value == 'P')
+    else if(document.forms.myForm.ViewerType[1].checked==true)
         show("premium");
-    else if(document.forms.myForm.ViewerType.value == 'B') {
+    else if(document.forms.myForm.ViewerType[2].checked==true) {
         show("crowd");
         show("premium");
     }    
@@ -60,15 +60,20 @@ keys_c = ['ViewerID', 'FirstName', 'LastName', 'TotalAmountDonated']
 keys_p = ['ViewerID', 'RenewalDate']
 exact_keys = ['ViewerID', 'TotalAmountDonated']
 ignore_keys = ['ViewerType', 'DateOfBirth','Email', 'UserName', 'HashedPassword', 'Salt', 'FirstName', 'LastName', 'TotalAmountDonated', 'RenewalDate']
+a_keys = ['AddressID', 'StreetNumber', 'StreetNumberSuffix', 'StreetName', 'StreetType', 'AddressType', 'AddressTypeIdentifier', 'MinorMunicipality', 'MajorMunicipality', 'GoverningDistrict', 'PostalArea', 'Country']
+address_keys = ['ViewerID', 'AddressID', 'StartDate', 'EndDate']
+address_exact = ['ViewerID', 'AddressID']
+address_pk = ['ViewerID', 'AddressID', 'StartDate']
 message = ""
 
-fields = dict.fromkeys(keys + keys_c + keys_p + ['ViewerTypeOld'])
+fields = dict.fromkeys(keys + keys_c + keys_p + address_keys + ['ViewerTypeOld', 'StartDateOld'])
 
 for key in fields:
     fields[key] = form.getvalue(key)
 
 ######## If UPDATE button is pressed then ... ############################################################################
 ignore_update = [];
+message2 = ""
 if form.getvalue("submit") == "Update":        
     fields['Salt'] = uuid.uuid4().hex
     if fields["HashedPassword"] != None:
@@ -77,10 +82,42 @@ if form.getvalue("submit") == "Update":
         ignore_update = ['HashedPassword', 'Salt']
     
 
+    error = 0    
+    if(fields['ViewerType'] != fields['ViewerTypeOld']): #insert more tables if applicable if viewer type is changed
+        if(fields['ViewerType'] == 'B' or fields['ViewerType'] == 'C'):
+            if(fields['ViewerTypeOld'] == 'N' or fields['ViewerTypeOld'] == 'P'):
+                message =  sql.insert(db, cursor, 'CrowdFundingViewer', fields, keys_c)
+                print "insert"
+                if 'Error' in message:
+                    print message
+                    error = 1
+        if(fields['ViewerType'] == 'B' or fields['ViewerType'] == 'P'):
+            if(fields['ViewerTypeOld'] == 'N' or fields['ViewerTypeOld'] == 'C'):
+                message =  sql.insert(db, cursor, 'PremiumViewer', fields, keys_p)
+                print "insert"
+                if 'Error' in message:
+                    print message
+                    error = 1                
+                
+        if error == 1: #delete tables if there are any error
+            if(fields['ViewerTypeOld'] == 'N' or fields['ViewerTypeOld'] == 'P'):
+                sql.delete(db, cursor, 'CrowdFundingViewer', fields, ['ViewerID'])
+            if(fields['ViewerTypeOld'] == 'N' or fields['ViewerTypeOld'] == 'C'):
+                sql.delete(db, cursor, 'PremiumViewer', fields, ['ViewerID'])
+            message2 = "Update Error! Error in changing types!"
+        
+        #delete tables if viewer is now no longer premium or crowdfunding
+        if(fields['ViewerType'] == 'N' or fields['ViewerType'] == 'P'):
+            sql.delete(db, cursor, 'CrowdFundingViewer', fields, ['ViewerID'])
+        if(fields['ViewerType'] == 'N' or fields['ViewerType'] == 'C'):
+            sql.delete(db, cursor, 'PremiumViewer', fields, ['ViewerID'])
+    
+
+    #update current tables
     message =  sql.update(db, cursor, table, fields, keys, ['ViewerID'], ignore=ignore_update)
-    if fields['ViewerType'] != 'C' or fields['ViewerType'] != 'B':
+    if fields['ViewerTypeOld'] != 'C' or fields['ViewerTypeOld'] != 'B':
         message =  sql.update(db, cursor, 'CrowdFundingViewer', fields, keys_c, ['ViewerID'], ignore=ignore_update) 
-    if fields['ViewerType'] != 'P' or fields['ViewerType'] != 'B':
+    if fields['ViewerTypeOld'] != 'P' or fields['ViewerTypeOld'] != 'B':
         message =  sql.update(db, cursor, 'PremiumViewer', fields, keys_p, ['ViewerID'], ignore=ignore_update)          
 
                          
@@ -141,9 +178,11 @@ for i in range(2):
     else:
         row_p[i] = escape(str(row_p[i]), entities)
 
+check = {"C":0, "P":1, "B":2,"N":3}
+types = ["", "", "", ""]
+if(row[1] != ""):
+    types[check[row[1]]] = 'checked="checked"'
 
-
-    
 
 ####### PRINT FORM ##############################################################################
     
@@ -176,7 +215,7 @@ print """
         </div>
         
         <div class="textbox">
-            <label for="Player Type">UserName:</label>
+            <label for="UserName">UserName:</label>
             <input name="UserName" id="UserName" type="text" value="{}"/>
         </div>
 
@@ -187,7 +226,11 @@ print """
 
         <div class="textbox">
             <label for="ViewerType">Viewer Type:</label>
-            <input type="radio" name="ViewerType"  value="{}" checked="checked" onclick="details();">{}<br />
+            <input type ="hidden" name="ViewerTypeOld" value="{}">
+            <input type="radio" name="ViewerType"  value="C" {} onclick="details();">Crowdfunding<br />
+            <input type="radio" name="ViewerType"  value="P" {} onclick="details();">Premium<br />
+            <input type="radio" name="ViewerType"  value="B" {} onclick="details();">Both<br />
+            <input type="radio" name="ViewerType"  value="N" {} onClick="details()">Regular
 
         </div>
         
@@ -224,14 +267,65 @@ print """
 <script type="text/javascript">
 details();
 </script>
-""".format(row[0], row[0], row[2], row[3], row[4], row[1], row[1] , row_c[1], row_c[2], row_c[3], row_p[1], row_p[1])
+""".format(row[0], row[0], row[2], row[3], row[4], row[1], types[0], types[1], types[2], types[3] , row_c[1], row_c[2], row_c[3], row_p[1], row_p[1])
        
+######## If CHANGE ADDRESS (Date, ID) button is pressed then ... ###########################################################################        
+if form.getvalue("submit") == "Change":
+    query = "UPDATE ViewerAddress SET StartDate = %s, EndDate = %s WHERE ViewerID = %s AND AddressID = %s AND StartDate = %s;"
+    args = (fields['StartDate'], fields['EndDate'], fields['ViewerID'], fields['AddressID'], fields['StartDateOld'])
+
+    try:   
+        cursor.execute(query, args)
+        db.commit()
+        print '<div class = "success">Update Successful!</div>'
+    except Exception, e:
+        print '<div class = "error">Update Error! {}.</div>'.format(repr(e))
+        
+######## If DELETE ADDRESS button is pressed then ... ###########################################################################        
+if form.getvalue("submit") == "DeleteAddress":
+    print sql.delete(db, cursor, "ViewerAddress", fields, address_pk)
+    print sql.delete(db, cursor, "Address", fields, ['AddressID'])
+    
+####### GENERATE AND EXECUTE SEARCH QUERY FOR ADDRESS  ################################################################################
+
+result =  sql.search(db, cursor, "ViewerAddress", fields, address_keys, address_exact, select=["AddressID", "StartDate", "EndDate"], ignore=['AddressID', 'StartDate', 'EndDate'], order="ORDER BY StartDate DESC")
+rows = result[0];
+print result[1];
 
     
-print message                                                                                         
+####### DISPLAY RESULTS TABLE  #############################################################################################
+print message
+print message2
+                                        
+print '''<div class="insert_button"><input type="button" onClick="parent.location='address_insert.py?ViewerID={}'" value='InsertAddress'></div>'''.format(form.getvalue(keys[0]))
+print '<table class="gridtable" align="center">'
+
+# Print column headers    
+print '<tr>'
+print "<th>AddressID</th><th>StartDate</th><th>EndDate</th><th>Change</th><th>Update</th><th>Delete</th>"
+print '</tr>'
+
+# Print each row of table    
+if rows != None: 
+    for row in rows:
+        print '<tr>'
+        print '<form action="viewer.py" method="get">'
+        print '<input name="ViewerID" id="ViewerID" type="hidden" value ="{0}" />'.format(fields['ViewerID'])
+        print '<td><input name="AddressID" id="AddressID" type="hidden" value ="{0}" />{0}</td>'.format(row[0])
+        print '<td><input name="StartDateOld" id="StartDateOld" type="hidden" value ="{0}" /><input name="StartDate" id="StartDate" type="text" value ="{0}" /></td>'.format(escape(str(row[1]), entities))
+        print '<td><input name="EndDate" id="EndDate" type="text" value ="{}" /></td>'.format(escape(str(row[2]), entities))
+        print '<td><input type="submit" name="submit" value="Change" /></td>'
+        print '''<td><input type="button" onClick="parent.location='address_update.py?AddressID={}'" value='UpdateAddress'></td>'''.format(row[0])
+        print '<td><input type="submit" name="submit" value="DeleteAddress" /></td>'
+        print '</form>'
+        print '</tr>'
+                                                                                             
+print '</table>'
+                                                                                        
 print html.end_html
                      
 # Tidy up and free resources
 cursor.close()
 db.close()
 sess.close()    
+

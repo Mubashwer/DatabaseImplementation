@@ -25,7 +25,7 @@ if (not loggedIn or not userType == 'S'):
     sys.exit(0)
 # ---------------------------------------------------------------------------------------------------------------------
     
-print html.make_head("video_modify.css", title="WWAG Player")
+print html.make_head("video_modify.css", title="WWAG Players")
 
 print html.make_navbar(loggedIn, userType)
 
@@ -164,3 +164,4 @@ print html.end_html
 cursor.close()
 db.close()
 sess.close()                                                                                        
+

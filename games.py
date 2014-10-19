@@ -25,7 +25,7 @@ if (not loggedIn or not userType == 'S'):
 
 # ---------------------------------------------------------------------------------------------------------------------
     
-print html.make_head("video_modify.css", title="WWAG Achievements")
+print html.make_head("video_modify.css", title="WWAG Games")
 
 print html.make_navbar(loggedIn, userType)
 
@@ -61,8 +61,11 @@ if form.getvalue("submit") == "Update":
         
 ######## LOAD RESULT ... ############################################################################
         
-result =  sql.search(db, cursor, table, fields, keys, exact_keys, ignore=ignore, limit=10, fetch_one=True)
-row = result[0];
+if(fields['GameID'] != None):
+    result =  sql.search(db, cursor, table, fields, keys, exact_keys, ignore=ignore, limit=10, fetch_one=True)
+    row = result[0];
+else:
+    row = None
 
 if row == None:
     row = ["", "", "", "", "", "",  "", "", ""]
@@ -89,7 +92,7 @@ print """
         </div>
 
         <div class="textbox">
-            <label for="GameName">Game Name*:</label>
+            <label for="GameName">Game Name:</label>
             <input name="GameName" id="GameName" type="text" value = "{8}" />
         </div>
         
@@ -172,3 +175,4 @@ print html.end_html
 cursor.close()
 db.close()
 sess.close()                                                                                        
+

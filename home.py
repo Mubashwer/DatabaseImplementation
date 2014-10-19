@@ -14,14 +14,13 @@ form = cgi.FieldStorage()
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-print html.make_head("home.css", title="WWAG")
+print html.make_head("home.css", title="WWAG Home")
 
 print html.make_navbar(loggedIn, userType)
 
 print """
   
 <body>
-  <p>
     <div id="background">
       <p id="text"> WWAG </p>
       <p id="text2"> The Wil Wheaton Appreciation Guild </p>
