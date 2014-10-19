@@ -129,7 +129,8 @@ CREATE TABLE VenueEquipment (
     EquipmentID             SMALLINT       NOT NULL,
     FinancialYearStartingDate   DATE       NOT NULL,
     SoftwareVersion         VARCHAR(45)    DEFAULT NULL,
-    PRIMARY KEY (VenueID, EquipmentID),
+    Platform		    VARCHAR(30)	   DEFAULT NULL,
+    PRIMARY KEY (VenueID, EquipmentID, FinancialYearStartingDate),
     FOREIGN KEY (VenueID) REFERENCES Venue(VenueID)
 	    ON DELETE CASCADE
 	    ON UPDATE CASCADE,
