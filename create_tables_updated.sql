@@ -66,7 +66,7 @@ CREATE TABLE Venue (
     SupervisorID            SMALLINT       NOT NULL,
     PRIMARY KEY (VenueID),
     FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID)
-	    ON DELETE RESTRICT
+	    ON DELETE CASCADE
 	    ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -79,7 +79,7 @@ CREATE TABLE InstanceRun (
     CategoryName            VARCHAR(50)    DEFAULT NULL,
     PRIMARY KEY (InstanceRunID),
     FOREIGN KEY (SupervisorID) REFERENCES Player(PlayerID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -92,7 +92,7 @@ CREATE TABLE Achievement (
     RewardBody              VARCHAR(45)    DEFAULT NULL,
     PRIMARY KEY (AchievementID),
     FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -107,10 +107,10 @@ CREATE TABLE Video (
     GameID                  MEDIUMINT      NOT NULL, 
     PRIMARY KEY (VideoID),
     FOREIGN KEY (InstanceRunID) REFERENCES InstanceRun(InstanceRunID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (GameID) REFERENCES Game(GameID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -161,7 +161,7 @@ CREATE TABLE CrowdFundingViewer(
     TotalAmountDonated      DECIMAL(9,2)   DEFAULT 0.00,
     PRIMARY KEY (ViewerID),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -171,7 +171,7 @@ CREATE TABLE PremiumViewer(
     RenewalDate             DATE           NOT NULL,
     PRIMARY KEY (ViewerID),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -183,7 +183,7 @@ CREATE TABLE ViewerOrder(
     ViewerID                INT UNSIGNED   NOT NULL,
     PRIMARY KEY (ViewerOrderID),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -226,10 +226,10 @@ CREATE TABLE ViewerAddress(
     EndDate                DATE             DEFAULT NULL,
     PRIMARY KEY (ViewerID, AddressID, StartDate),
     FOREIGN KEY (ViewerID) REFERENCES Viewer(ViewerID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (AddressID) REFERENCES Address(AddressID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -241,10 +241,10 @@ CREATE TABLE PlayerAddress(
     EndDate                DATE             DEFAULT NULL,			
     PRIMARY KEY (PlayerID, AddressID, StartDate),
     FOREIGN KEY (PlayerID) REFERENCES Player(PlayerID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (AddressID) REFERENCES Address(AddressID)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
